@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react"
 
 export type PointerDataPoint = {
   x: number;    // absolute pixel position on x-axis

@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
   Card,
   CardAction,
@@ -7,9 +8,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Separator } from "./ui/separator";
-import { useState } from "react"
-import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Separator } from "./ui/separator"
+import { Button } from "./ui/button"
+import TrackingTestCanvas from "./TrackingTestCanvas"
 
 function TrackingTestCard() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -19,7 +30,8 @@ function TrackingTestCard() {
     setDialogOpen((prev) => !prev);
   }
 
-  return <Card 
+  return <>
+  <Card 
     className="border-2 border-gray-600 w-1/5 hover:scale-105
                transition-transform duration-250 cursor-pointer"
     onClick={handleCardClick}
@@ -66,6 +78,15 @@ function TrackingTestCard() {
       </div>
     </CardFooter>
   </Card>
+
+  <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <DialogContent className="min-w-screen h-screen p-4" showCloseButton={false}>
+      <div tabIndex={0}>
+        <TrackingTestCanvas />
+      </div>
+    </DialogContent>
+  </Dialog>
+  </>
 }
 
 export default TrackingTestCard
