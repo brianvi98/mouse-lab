@@ -9,51 +9,60 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "./ui/separator";
 import { useState } from "react"
+import { Button } from "./ui/button";
 
 function TrackingTestCard() {
-  const [isIdle, setIsIdle] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  return <Card className="border-2 border-gray-600 w-1/5 hover:scale-105
-                          transition-transform duration-500"
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setDialogOpen((prev) => !prev);
+  }
+
+  return <Card 
+    className="border-2 border-gray-600 w-1/5 hover:scale-105
+               transition-transform duration-250 cursor-pointer"
+    onClick={handleCardClick}
   >
     <CardHeader className="flex flex-row justify-between items-center">
-      <CardTitle className="text-orange-300">Flick Test</CardTitle>
-      <CardContent className="border rounded-sm py-0.5">
-        {isIdle ? "IDLE" : "ACTIVE"}
-      </CardContent>
+      <CardTitle className="text-green-300">Tracking Test</CardTitle>
+      <div className="border rounded-sm py-0.5 text-center w-20">
+        {dialogOpen ? "ACTIVE" : "IDLE"}
+      </div>
     </CardHeader>
 
     <CardDescription 
       className="flex flex-col justify-center align-center py-20"
     >
-      <CardContent className="font-semibold text-center">
-        Click to Start <br />Flicking Test
-      </CardContent>
+      <Button className="font-semibold text-center border w-fit mx-auto mb-2"
+      >
+        START
+      </Button>
       <CardContent className="text-center text-xs">
-        (short, explosive movements)
+        (sustained, focused movement)
       </CardContent>
     </CardDescription>
     
-    <CardFooter>
-      <div className="flex flex-col">
+    <CardFooter className="px-2">
+      <div className="flex flex-col justify-between">
         <CardContent className="text-xs font-light text-gray-400 text-center">
           PEAK VELOCITY
         </CardContent>
-        <CardContent className="text-center text-orange-300">70</CardContent>
+        <CardContent className="text-center text-green-300">70</CardContent>
       </div>
       <Separator orientation="vertical" />
-      <div className="flex flex-col">
+      <div className="flex flex-col justify-between">
         <CardContent className="text-xs font-light text-gray-400 text-center">
           PEAK ACCELERATION
         </CardContent>
-        <CardContent className="text-center text-orange-300">-</CardContent>
+        <CardContent className="text-center text-green-300">-</CardContent>
       </div>
       <Separator orientation="vertical" />
-      <div className="flex flex-col">
+      <div className="flex flex-col justify-between">
         <CardContent className="text-xs font-light text-gray-400 text-center">
-          AVG. JERK
+          AVG. JITTER
         </CardContent>
-        <CardContent className="text-center text-orange-300">45</CardContent>
+        <CardContent className="text-center text-green-300">45</CardContent>
       </div>
     </CardFooter>
   </Card>
