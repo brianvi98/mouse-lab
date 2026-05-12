@@ -25,7 +25,7 @@ import TrackingTestCanvas from "./TrackingTestCanvas"
 function TrackingTestCard() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleCardClick = (e: React.PointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setDialogOpen((prev) => !prev);
   }
@@ -82,7 +82,7 @@ function TrackingTestCard() {
   <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
     <DialogContent className="min-w-screen h-screen p-4" showCloseButton={false}>
       <div tabIndex={0}>
-        <TrackingTestCanvas />
+        <TrackingTestCanvas onCompletion={() => {}}/>
       </div>
     </DialogContent>
   </Dialog>
