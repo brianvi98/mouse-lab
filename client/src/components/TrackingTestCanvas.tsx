@@ -116,12 +116,12 @@ function TrackingTestCanvas({
 
   return <div 
     ref={canvasRef} 
-    className="w-full h-full bg-gray-800 flex items-center justify-center"
+    className="w-full h-full bg-canvas flex items-center justify-center"
   >
     {
     !isRecording && 
       <div 
-        className="flex justify-center items-center w-full h-full bg-black
+        className="flex justify-center items-center w-full h-full bg-canvas
         absolute opacity-75"
         onClick={clickStartTest}
       >
@@ -136,11 +136,11 @@ function TrackingTestCanvas({
     {
     trials[trialIndex].axis === 'x' &&
       <div 
-        className="border border-green-300 bg-gray-400 w-full h-32"
+        className="border border-track-teal bg-gray-400 w-full h-32"
         onMouseMove={handleMouseMoveHorizontal}
       >
         <div 
-          className="bg-green-300 h-full"
+          className="bg-track-teal h-full"
           style={{ width: `${horizontalProgress}%`}}
         >
         </div>
@@ -149,11 +149,11 @@ function TrackingTestCanvas({
     {
     trials[trialIndex].axis === 'y' &&
       <div 
-        className="border border-green-300 bg-gray-400 h-full w-32"
+        className="border border-track-teal bg-gray-400 h-full w-32"
         onMouseMove={handleMouseMoveVertical}
       >
         <div 
-          className="bg-green-300 w-full"
+          className="bg-track-teal w-full"
           style={{ height: `${verticalProgress}%`}}
         >
         </div>

@@ -37,7 +37,7 @@ function TrackingTestCard() {
     onClick={handleCardClick}
   >
     <CardHeader className="flex flex-row justify-between items-center">
-      <CardTitle className="text-green-300">Tracking Test</CardTitle>
+      <CardTitle className="text-track-teal">Tracking Test</CardTitle>
       <div className="border rounded-sm py-0.5 text-center w-20">
         {dialogOpen ? "ACTIVE" : "IDLE"}
       </div>
@@ -60,21 +60,21 @@ function TrackingTestCard() {
         <CardContent className="text-xs font-light text-gray-400 text-center">
           PEAK VELOCITY
         </CardContent>
-        <CardContent className="text-center text-green-300">70</CardContent>
+        <CardContent className="text-center text-track-teal">70</CardContent>
       </div>
       <Separator orientation="vertical" />
       <div className="flex flex-col justify-between">
         <CardContent className="text-xs font-light text-gray-400 text-center">
           PEAK ACCELERATION
         </CardContent>
-        <CardContent className="text-center text-green-300">-</CardContent>
+        <CardContent className="text-center text-track-teal">-</CardContent>
       </div>
       <Separator orientation="vertical" />
       <div className="flex flex-col justify-between">
         <CardContent className="text-xs font-light text-gray-400 text-center">
           AVG. JITTER
         </CardContent>
-        <CardContent className="text-center text-green-300">45</CardContent>
+        <CardContent className="text-center text-track-teal">45</CardContent>
       </div>
     </CardFooter>
   </Card>

@@ -1,1 +1,8 @@
-@import 'tailwindcss'
+@import "tailwindcss";
+@tailwind utilities;
+
+@theme {
+    --color-track-teal: #2ec4a0;
+    --color-flick-orange: #f0a030;
+    --color-canvas: #1a1a1e;
+}
