@@ -9,6 +9,12 @@ export type AccelerationInfo = {
     acceleration: number;
     time: number;
 }
+export type calculatedMetrics = {
+    velocitiesX: VelocityInfo[],
+    velocitiesY: VelocityInfo[],
+    accelerationsX: AccelerationInfo[],
+    accelerationsY: AccelerationInfo[],
+}
 
 // pointer data point shape: {x, y, dx, dy, t}
 export const calculateVelocity: (
@@ -39,13 +45,6 @@ export const calculateAcceleration: (
 
         return {acceleration, time: vi.time};
     })
-}
-
-type calculatedMetrics = {
-    velocitiesX: VelocityInfo[],
-    velocitiesY: VelocityInfo[],
-    accelerationsX: AccelerationInfo[],
-    accelerationsY: AccelerationInfo[],
 }
 
 export const calculateMetrics = (
