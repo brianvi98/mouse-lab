@@ -14,6 +14,10 @@ export type calculatedMetrics = {
     velocitiesY: VelocityInfo[],
     accelerationsX: AccelerationInfo[],
     accelerationsY: AccelerationInfo[],
+    avgVelocitiesX: number;
+    avgVelocitiesY: number;
+    avgAccelerationsX: number;
+    avgAccelerationsY: number;
 }
 
 // pointer data point shape: {x, y, dx, dy, t}
@@ -47,6 +51,10 @@ export const calculateAcceleration: (
     })
 }
 
+const average = (arr: number[]) => {
+    return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+}
+
 export const calculateMetrics = (
     data: PointerDataPoint[]
 ): calculatedMetrics => {
@@ -55,10 +63,20 @@ export const calculateMetrics = (
     const accelerationsX = calculateAcceleration(velocitiesX);
     const accelerationsY = calculateAcceleration(velocitiesY);
 
+    const avgVelocitiesX = average(velocitiesX.map(v => v.velocity));
+    const avgVelocitiesY = average(velocitiesY.map(v => v.velocity));
+    const avgAccelerationsX = average(accelerationsX.map(a => a.acceleration));
+    const avgAccelerationsY = average(accelerationsY.map(a => a.acceleration));
+
     return {
         velocitiesX,
         velocitiesY,
         accelerationsX,
         accelerationsY,
+
+        avgVelocitiesX,
+        avgVelocitiesY,
+        avgAccelerationsX,
+        avgAccelerationsY,
     }
 }
