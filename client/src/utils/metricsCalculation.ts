@@ -1,11 +1,11 @@
 import type { PointerDataPoint } from "@/hooks/usePointerCapture";
 
-type Axis = 'x' | 'y';
-type VelocityInfo = {
+export type Axis = 'x' | 'y';
+export type VelocityInfo = {
     velocity: number;
     time: number;
 }
-type AccelerationInfo = {
+export type AccelerationInfo = {
     acceleration: number;
     time: number;
 }
@@ -39,4 +39,27 @@ export const calculateAcceleration: (
 
         return {acceleration, time: vi.time};
     })
+}
+
+type calculatedMetrics = {
+    velocitiesX: VelocityInfo[],
+    velocitiesY: VelocityInfo[],
+    accelerationsX: AccelerationInfo[],
+    accelerationsY: AccelerationInfo[],
+}
+
+export const calculateMetrics = (
+    data: PointerDataPoint[]
+): calculatedMetrics => {
+    const velocitiesX = calculateVelocity(data, 'x');
+    const velocitiesY = calculateVelocity(data, 'y');
+    const accelerationsX = calculateAcceleration(velocitiesX);
+    const accelerationsY = calculateAcceleration(velocitiesY);
+
+    return {
+        velocitiesX,
+        velocitiesY,
+        accelerationsX,
+        accelerationsY,
+    }
 }
