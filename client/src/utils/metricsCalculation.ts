@@ -45,7 +45,8 @@ export const calculateAcceleration: (
     return data.slice(1).map((vi, i) => {
         const prev = data[i];
         const deltaTime = vi.time - prev.time;
-        const acceleration = deltaTime > 0 ? vi.velocity / deltaTime : 0;
+        const deltaVelocity = vi.velocity - prev.velocity;
+        const acceleration = deltaTime > 0 ? deltaVelocity / deltaTime : 0;
 
         return {acceleration, time: vi.time};
     })
@@ -63,10 +64,14 @@ export const calculateMetrics = (
     const accelerationsX = calculateAcceleration(velocitiesX);
     const accelerationsY = calculateAcceleration(velocitiesY);
 
-    const avgVelocitiesX = average(velocitiesX.map(v => v.velocity));
-    const avgVelocitiesY = average(velocitiesY.map(v => v.velocity));
-    const avgAccelerationsX = average(accelerationsX.map(a => a.acceleration));
-    const avgAccelerationsY = average(accelerationsY.map(a => a.acceleration));
+    const avgVelocitiesX = average(velocitiesX.map(v => Math.abs(v.velocity)));
+    const avgVelocitiesY = average(velocitiesY.map(v => Math.abs(v.velocity)));
+    const avgAccelerationsX = average(
+        accelerationsX.map(a => Math.abs(a.acceleration))
+    );
+    const avgAccelerationsY = average(
+        accelerationsY.map(a => Math.abs(a.acceleration))
+    );
 
     return {
         velocitiesX,
