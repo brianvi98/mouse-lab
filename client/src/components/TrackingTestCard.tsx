@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react";
 import {
   Card,
   CardAction,
@@ -7,7 +7,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogClose,
@@ -17,76 +17,111 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Separator } from "./ui/separator"
-import { Button } from "./ui/button"
-import TrackingTestCanvas from "./TrackingTestCanvas"
+} from "@/components/ui/dialog";
+import { Separator } from "./ui/separator";
+import { Button } from "./ui/button";
+
+import TrackingTestCanvas from "./TrackingTestCanvas";
+import TrackingTestDashboard from "./TrackingTestDashboard";
+import type { PointerDataPoint } from "@/hooks/usePointerCapture";
+import { calculateMetrics } from "@/utils/metricsCalculation";
 
 function TrackingTestCard() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [pointerData, setPointerData] = useState<PointerDataPoint[]>([]);
+  const {
+    frames,
+    avgVelocitiesX,
+    avgVelocitiesY,
+    avgAccelerationsX,
+    avgAccelerationsY,
+  } = useMemo(() => {
+    return calculateMetrics(pointerData);
+  }, [pointerData]);
 
   const handleCardClick = (e: React.PointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setDialogOpen((prev) => !prev);
-  }
+  };
 
-  return <>
-  <Card 
-    className="border-2 border-gray-600 w-1/5 hover:scale-105
-               transition-transform duration-250 cursor-pointer"
-    onClick={handleCardClick}
-  >
-    <CardHeader className="flex flex-row justify-between items-center">
-      <CardTitle className="text-track-teal">Tracking Test</CardTitle>
-      <div className="border rounded-sm py-0.5 text-center w-20">
-        {dialogOpen ? "ACTIVE" : "IDLE"}
-      </div>
-    </CardHeader>
+  const handleTestCompletion = (data: PointerDataPoint[]) => {
+    setPointerData(data);
+  };
 
-    <CardDescription 
-      className="flex flex-col justify-center align-center py-20"
-    >
-      <Button className="font-semibold text-center border w-fit mx-auto mb-2"
-      >
-        START
-      </Button>
-      <CardContent className="text-center text-xs">
-        (sustained, focused movement)
-      </CardContent>
-    </CardDescription>
-    
-    <CardFooter className="px-2">
-      <div className="flex flex-col justify-between">
-        <CardContent className="text-xs font-light text-gray-400 text-center">
-          PEAK VELOCITY
-        </CardContent>
-        <CardContent className="text-center text-track-teal">70</CardContent>
-      </div>
-      <Separator orientation="vertical" />
-      <div className="flex flex-col justify-between">
-        <CardContent className="text-xs font-light text-gray-400 text-center">
-          PEAK ACCELERATION
-        </CardContent>
-        <CardContent className="text-center text-track-teal">-</CardContent>
-      </div>
-      <Separator orientation="vertical" />
-      <div className="flex flex-col justify-between">
-        <CardContent className="text-xs font-light text-gray-400 text-center">
-          AVG. JITTER
-        </CardContent>
-        <CardContent className="text-center text-track-teal">45</CardContent>
-      </div>
-    </CardFooter>
-  </Card>
+  return (
+    <>
+      <div className="w-1/5 flex flex-col justify-center">
+        <Card
+          className="border-2 border-gray-600 hover:scale-101
+                    transition-transform duration-100 cursor-pointer"
+          onClick={handleCardClick}
+        >
+          <CardHeader className="flex flex-row justify-between items-center">
+            <CardTitle className="text-track-teal">Tracking Test</CardTitle>
+            <div className="border rounded-sm py-0.5 text-center w-25">
+              {!frames.length ? "INCOMPLETE" : "COMPLETE"}
+            </div>
+          </CardHeader>
+          <CardDescription className="flex flex-col justify-center align-center py-20">
+            <Button className="font-semibold text-center border w-fit mx-auto mb-2">
+              START
+            </Button>
+            <CardContent className="text-center text-xs">
+              (sustained, focused movement)
+            </CardContent>
+          </CardDescription>
 
-  <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-    <DialogContent className="min-w-screen h-screen p-4" showCloseButton={false}>
-      <div tabIndex={0}>
-        <TrackingTestCanvas onCompletion={() => {}}/>
+          <CardFooter className="px-2 flex flex-row justify-between">
+            <div className="flex flex-col justify-between">
+              <CardContent className="text-xs font-light text-gray-400 text-center">
+                AVERAGE VELOCITY
+                <br />
+                (px/ms)
+              </CardContent>
+              <CardContent className="text-center text-track-teal tabular-nums">
+                X : {avgVelocitiesX ? avgVelocitiesX.toFixed(3) : "-"}
+              </CardContent>
+              <CardContent className="text-center text-track-teal tabular-nums">
+                Y : {avgVelocitiesY ? avgVelocitiesY.toFixed(3) : "-"}
+              </CardContent>
+            </div>
+            <Separator orientation="vertical" />
+            <div className="flex flex-col justify-between">
+              <CardContent className="text-xs font-light text-gray-400 text-center">
+                AVERAGE ACCELERATION
+                <br />
+                (px/ms²)
+              </CardContent>
+              <CardContent className="text-center text-track-teal tabular-nums">
+                X : {avgAccelerationsX ? avgAccelerationsX.toFixed(3) : "-"}
+              </CardContent>
+              <CardContent className="text-center text-track-teal tabular-nums">
+                Y : {avgAccelerationsY ? avgAccelerationsY.toFixed(3) : "-"}
+              </CardContent>
+            </div>
+          </CardFooter>
+        </Card>
+
+        <TrackingTestDashboard
+          open={sheetOpen}
+          onOpenChange={setSheetOpen}
+          data={frames}
+        />
       </div>
-    </DialogContent>
-  </Dialog>
-  </>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent
+          className="min-w-screen h-screen p-4"
+          showCloseButton={false}
+        >
+          <div tabIndex={0}>
+            <TrackingTestCanvas onCompletion={handleTestCompletion} />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }
 
-export default TrackingTestCard
+export default TrackingTestCard;
