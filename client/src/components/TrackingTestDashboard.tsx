@@ -65,7 +65,7 @@ function TrackingTestDashboard({
             {metricButtonsConfig.map((m, idx) => (
               <Button
                 key={idx}
-                className="mb-2"
+                className="mb-2 cursor-pointer"
                 onClick={() => setMetricSelection(m.metric)}
                 variant={metricSelection === m.metric ? "default" : "outline"}
               >
