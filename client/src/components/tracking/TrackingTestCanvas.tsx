@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+
 import { usePointerCapture } from "@/hooks/usePointerCapture";
 import type { PointerDataPoint } from "@/hooks/usePointerCapture";
 

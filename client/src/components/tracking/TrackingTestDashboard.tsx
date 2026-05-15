@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo } from "react";
-import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
-import { Button } from "./ui/button";
+import { useState, useEffect } from "react";
+
+import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
+import { Button } from "../ui/button";
+import MetricPlot from "../plots/MetricPlot";
 import type { Frame, Metric } from "@/utils/metricsCalculation";
-import MetricPlot from "./plots/MetricPlot";
 
 export type TrackingTestDashboardProps = {
   data: Frame[];

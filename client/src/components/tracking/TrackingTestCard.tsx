@@ -1,30 +1,20 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
+
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Separator } from "./ui/separator";
-import { Button } from "./ui/button";
-
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
 import TrackingTestCanvas from "./TrackingTestCanvas";
 import TrackingTestDashboard from "./TrackingTestDashboard";
-import type { PointerDataPoint } from "@/hooks/usePointerCapture";
 import { calculateMetrics } from "@/utils/metricsCalculation";
+import type { PointerDataPoint } from "@/hooks/usePointerCapture";
 
 function TrackingTestCard() {
   const [dialogOpen, setDialogOpen] = useState(false);
