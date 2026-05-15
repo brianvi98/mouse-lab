@@ -11,11 +11,11 @@ import {
   Tooltip,
   Line,
 } from "recharts";
-import type { Frame } from "@/utils/metricsCalculation";
+import type { Frame, Metric } from "@/utils/metricsCalculation";
 
 export type MetricPlotProps = {
   data: Frame[];
-  dataKey: "vx" | "vy" | "ax" | "ay";
+  dataKey: Metric;
   title?: string;
   axisLabels: { xLabel: string; yLabel: string };
   colors: {
