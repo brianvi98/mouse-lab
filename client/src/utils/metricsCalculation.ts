@@ -1,10 +1,14 @@
 import type { PointerDataPoint } from "@/hooks/usePointerCapture";
 
 export type Axis = "x" | "y";
+
+export type Metric = "vx" | "vy" | "ax" | "ay";
+
 export type VelocityInfo = {
   velocity: number;
   time: number;
 };
+
 export type AccelerationInfo = {
   acceleration: number;
   time: number;
