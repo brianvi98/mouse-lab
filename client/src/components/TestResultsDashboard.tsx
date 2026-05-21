@@ -1,23 +1,44 @@
 import { useState, useEffect } from "react";
 
-import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
-import { Button } from "../ui/button";
-import MetricPlot from "../plots/MetricPlot";
+import { Button } from "./ui/button";
+import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
+import MetricPlot from "./plots/MetricPlot";
 import type { Frame, Metric } from "@/utils/metricsCalculation";
 
-export type TrackingTestDashboardProps = {
+export type AxisLabels = { xLabel: string; yLabel: string };
+
+export type MetricButton = {
+  metric: Metric;
+  label: string;
+  axisLabels: AxisLabels;
+};
+
+export type PlotColors = {
+  realData: React.CSSProperties["color"];
+  smoothData: React.CSSProperties["color"];
+};
+
+export type TestResultsDashboardProps = {
   data: Frame[];
+  title?: string;
+  // first metric to be shown
+  defaultMetric: Metric;
+  metricButtonsConfig: MetricButton[];
+  plotColors: PlotColors;
   open: boolean;
   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
-function TrackingTestDashboard({
+function TestResultsDashboard({
   data,
+  title,
+  defaultMetric,
+  metricButtonsConfig,
+  plotColors,
   open,
   onOpenChange,
-}: TrackingTestDashboardProps) {
+}: TestResultsDashboardProps) {
   const [ready, setReady] = useState(false);
-  const [metricSelection, setMetricSelection] = useState<Metric>("vx");
+  const [metricSelection, setMetricSelection] = useState<Metric>(defaultMetric);
 
   useEffect(() => {
     if (open) {
@@ -28,27 +49,9 @@ function TrackingTestDashboard({
     }
   }, [open]);
 
-  const metricButtonsConfig: { metric: Metric; label: string }[] = [
-    { metric: "vx", label: "X-axis Velocity" },
-    { metric: "vy", label: "Y-axis Velocity" },
-    { metric: "ax", label: "X-axis Acceleration" },
-    { metric: "ay", label: "Y-axis Acceleration" },
-  ];
-
-  const velocityLabels = {
-    xLabel: "Time (ms)",
-    yLabel: "Pixels per millisecond (px/ms)",
-  };
-
-  const accelerationLabels = {
-    xLabel: "Time (ms)",
-    yLabel: "Pixels per millisecond squared (px/ms²)",
-  };
-
-  const plotColors = {
-    realData: "#2ec4a0",
-    smoothData: "#f0a030",
-  };
+  const selectedConfig = metricButtonsConfig.find(
+    (m) => m.metric === metricSelection,
+  );
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -62,11 +65,12 @@ function TrackingTestDashboard({
       </SheetTrigger>
       <SheetContent side={"bottom"} className="h-[98vh]!">
         <div className="flex-1 flex h-full min-h-0">
-          <aside className="flex flex-col gap-2 w-48 p-2 border-r">
+          <aside className="flex flex-col items-center gap-2 w-48 p-2 border-r">
+            <h1 className="text-2xl">{title}</h1>
             {metricButtonsConfig.map((m, idx) => (
               <Button
                 key={idx}
-                className="mb-2 cursor-pointer"
+                className="mb-2 cursor-pointer w-full"
                 onClick={() => setMetricSelection(m.metric)}
                 variant={metricSelection === m.metric ? "default" : "outline"}
               >
@@ -81,9 +85,10 @@ function TrackingTestDashboard({
                   data={data}
                   dataKey={metricSelection}
                   axisLabels={
-                    metricSelection === "vx" || metricSelection == "vy"
-                      ? velocityLabels
-                      : accelerationLabels
+                    selectedConfig?.axisLabels ?? {
+                      xLabel: "Time",
+                      yLabel: "Value",
+                    }
                   }
                   colors={plotColors}
                 />
@@ -96,4 +101,4 @@ function TrackingTestDashboard({
   );
 }
 
-export default TrackingTestDashboard;
+export default TestResultsDashboard;

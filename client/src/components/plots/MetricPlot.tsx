@@ -16,7 +16,6 @@ import type { Frame, Metric } from "@/utils/metricsCalculation";
 export type MetricPlotProps = {
   data: Frame[];
   dataKey: Metric;
-  title?: string;
   axisLabels: { xLabel: string; yLabel: string };
   colors: {
     realData: CSSProperties["color"];
