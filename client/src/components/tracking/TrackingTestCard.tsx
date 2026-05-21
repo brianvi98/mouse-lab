@@ -92,33 +92,41 @@ function TrackingTestCard() {
             </CardContent>
           </CardDescription>
 
-          <CardFooter className="px-2 flex flex-row justify-between min-h-20">
-            <div className="flex flex-col justify-between">
-              <CardContent className="text-xs font-light text-gray-400 text-center">
+          <CardFooter className="px-2 flex flex-row justify-between min-h-30">
+            <div className="flex flex-col items-center justify-center gap-2 min-w-32">
+              <div className="text-xs font-light text-gray-400 text-center">
                 AVERAGE VELOCITY
                 <br />
                 (px/ms)
-              </CardContent>
-              <CardContent className="text-center text-track-teal tabular-nums">
-                X : {avgVelocitiesX ? avgVelocitiesX.toFixed(3) : "-"}
-              </CardContent>
-              <CardContent className="text-center text-track-teal tabular-nums">
-                Y : {avgVelocitiesY ? avgVelocitiesY.toFixed(3) : "-"}
-              </CardContent>
+              </div>
+
+              <div className="text-track-teal tabular-nums">
+                <div>
+                  X : {avgVelocitiesX ? avgVelocitiesX.toFixed(3) : "-"}
+                </div>
+                <div>
+                  Y : {avgVelocitiesY ? avgVelocitiesY.toFixed(3) : "-"}
+                </div>
+              </div>
             </div>
+
             <Separator orientation="vertical" />
-            <div className="flex flex-col justify-between">
-              <CardContent className="text-xs font-light text-gray-400 text-center">
+
+            <div className="flex flex-col items-center justify-center gap-2 min-w-32">
+              <div className="text-xs font-light text-gray-400 text-center">
                 AVERAGE ACCELERATION
                 <br />
                 (px/ms²)
-              </CardContent>
-              <CardContent className="text-center text-track-teal tabular-nums">
-                X : {avgAccelerationsX ? avgAccelerationsX.toFixed(3) : "-"}
-              </CardContent>
-              <CardContent className="text-center text-track-teal tabular-nums">
-                Y : {avgAccelerationsY ? avgAccelerationsY.toFixed(3) : "-"}
-              </CardContent>
+              </div>
+
+              <div className="text-track-teal tabular-nums">
+                <div>
+                  X : {avgAccelerationsX ? avgAccelerationsX.toFixed(3) : "-"}
+                </div>
+                <div>
+                  Y : {avgAccelerationsY ? avgAccelerationsY.toFixed(3) : "-"}
+                </div>
+              </div>
             </div>
           </CardFooter>
         </Card>

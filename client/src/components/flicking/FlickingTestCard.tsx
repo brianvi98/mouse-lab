@@ -84,26 +84,30 @@ function FlickingTestCard() {
           </CardDescription>
 
           <CardFooter className="px-2 flex flex-row justify-between min-h-30">
-            <div className="flex flex-col justify-between">
-              <CardContent className="text-xs font-light text-gray-400 text-center">
+            <div className="flex flex-col items-center justify-center gap-2 min-w-32">
+              <div className="text-xs font-light text-gray-400 text-center">
                 PEAK VELOCITY
                 <br />
                 (px/ms)
-              </CardContent>
-              <CardContent className="text-center text-flick-orange tabular-nums">
+              </div>
+
+              <div className="text-flick-orange tabular-nums">
                 {peakVelocity ? peakVelocity.toFixed(3) : "-"}
-              </CardContent>
+              </div>
             </div>
+
             <Separator orientation="vertical" />
-            <div className="flex flex-col justify-between">
-              <CardContent className="text-xs font-light text-gray-400 text-center">
+
+            <div className="flex flex-col items-center justify-center gap-2 min-w-32">
+              <div className="text-xs font-light text-gray-400 text-center">
                 PEAK ACCELERATION
                 <br />
                 (px/ms²)
-              </CardContent>
-              <CardContent className="text-center text-flick-orange tabular-nums">
+              </div>
+
+              <div className="text-flick-orange tabular-nums">
                 {peakAcceleration ? peakAcceleration.toFixed(3) : "-"}
-              </CardContent>
+              </div>
             </div>
           </CardFooter>
         </Card>
