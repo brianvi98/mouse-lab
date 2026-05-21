@@ -2,7 +2,7 @@ import type { PointerDataPoint } from "@/hooks/usePointerCapture";
 
 export type Axis = "x" | "y";
 
-export type Metric = "vx" | "vy" | "ax" | "ay";
+export type Metric = "vx" | "vy" | "ax" | "ay" | "v" | "a";
 
 export type VelocityInfo = {
   velocity: number;
@@ -19,6 +19,8 @@ export type Frame = {
   vy: number;
   ax: number;
   ay: number;
+  v: number;
+  a: number;
   t: number;
 };
 
@@ -28,6 +30,8 @@ export type calculatedMetrics = {
   avgVelocitiesY: number;
   avgAccelerationsX: number;
   avgAccelerationsY: number;
+  peakVelocity: number;
+  peakAcceleration: number;
 };
 
 // pointer data point shape: {x, y, dx, dy, t}
@@ -47,6 +51,23 @@ export const calculateVelocity: (
   });
 };
 
+// for flicking (direction agnostic)
+export const calculateVelocityMagnitude: (
+  data: PointerDataPoint[],
+) => VelocityInfo[] = (data) => {
+  if (data.length < 2) return [];
+
+  const velocitiesX: VelocityInfo[] = calculateVelocity(data, "x");
+  const velocitiesY: VelocityInfo[] = calculateVelocity(data, "y");
+
+  return velocitiesX.map((vx, i) => ({
+    velocity: Math.sqrt(
+      vx.velocity ** 2 + (velocitiesY[i]?.velocity ?? 0) ** 2,
+    ),
+    time: vx.time,
+  }));
+};
+
 export const calculateAcceleration: (
   velocityData: VelocityInfo[],
 ) => AccelerationInfo[] = (data) => {
@@ -63,6 +84,14 @@ export const calculateAcceleration: (
   });
 };
 
+// again, for flicking (direction agnostic)
+export const calculateAccelerationMagnitude: (
+  data: PointerDataPoint[],
+) => AccelerationInfo[] = (data) => {
+  const velocitiesMagnitude = calculateVelocityMagnitude(data);
+  return calculateAcceleration(velocitiesMagnitude);
+};
+
 const average = (arr: number[]) => {
   return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 };
@@ -74,6 +103,8 @@ export const calculateMetrics = (
   const velocitiesY = calculateVelocity(data, "y");
   const accelerationsX = calculateAcceleration(velocitiesX);
   const accelerationsY = calculateAcceleration(velocitiesY);
+  const velocitiesMagnitude = calculateVelocityMagnitude(data);
+  const accelerationsMagnitude = calculateAccelerationMagnitude(data);
 
   const frames: Frame[] = [];
 
@@ -84,6 +115,8 @@ export const calculateMetrics = (
       vy: velocitiesY[i]?.velocity ?? 0,
       ax: accelerationsX[i - 1]?.acceleration ?? 0,
       ay: accelerationsY[i - 1]?.acceleration ?? 0,
+      v: velocitiesMagnitude[i]?.velocity ?? 0,
+      a: accelerationsMagnitude[i - 1]?.acceleration ?? 0,
     });
   }
 
@@ -95,6 +128,12 @@ export const calculateMetrics = (
   const avgAccelerationsY = average(
     accelerationsY.map((a) => Math.abs(a.acceleration)),
   );
+  const peakVelocity = velocitiesMagnitude.length
+    ? Math.max(...velocitiesMagnitude.map((v) => v.velocity))
+    : 0;
+  const peakAcceleration = accelerationsMagnitude.length
+    ? Math.max(...accelerationsMagnitude.map((a) => a.acceleration))
+    : 0;
 
   return {
     frames,
@@ -102,5 +141,7 @@ export const calculateMetrics = (
     avgVelocitiesY,
     avgAccelerationsX,
     avgAccelerationsY,
+    peakVelocity,
+    peakAcceleration,
   };
 };
