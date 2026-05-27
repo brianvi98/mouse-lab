@@ -67,8 +67,12 @@ function MetricPlot({ data, dataKey, axisLabels, colors }: MetricPlotProps) {
     return result;
   }, [data]);
 
+  if (!data) {
+    return <div className="border border-white"></div>;
+  }
+
   return (
-    <ResponsiveContainer width="96%" height="100%">
+    <ResponsiveContainer width="100%" height="100%">
       <LineChart
         data={smoothed}
         margin={{ top: 20, right: 0, left: 10, bottom: 10 }}
