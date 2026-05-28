@@ -15,18 +15,15 @@ import { calculateMetrics } from "@/utils/metricsCalculation";
 import type { Metric } from "@/utils/metricsCalculation";
 import type { PointerDataPoint } from "@/hooks/usePointerCapture";
 import FlickingTestCanvas from "./FlickingTestCanvas";
-import TestResultsDashboard from "../TestResultsDashboard";
-import type {
-  MetricButton,
-  AxisLabels,
-  PlotColors,
-} from "../TestResultsDashboard";
 
-function FlickingTestCard() {
+export type FlickingTestProps = {
+  onCompletion: (data: PointerDataPoint[]) => void;
+};
+
+function FlickingTestCard({ onCompletion }: FlickingTestProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
   const [pointerData, setPointerData] = useState<PointerDataPoint[]>([]);
-  const { frames, peakVelocity, peakAcceleration } = useMemo(() => {
+  const { peakVelocity, peakAcceleration } = useMemo(() => {
     return calculateMetrics(pointerData);
   }, [pointerData]);
 
@@ -37,29 +34,12 @@ function FlickingTestCard() {
 
   const handleTestCompletion = (data: PointerDataPoint[]) => {
     setPointerData(data);
-  };
-
-  const metricButtonsConfig: MetricButton[] = [
-    {
-      metric: "v",
-      label: "Velocity",
-      axisLabels: { xLabel: "Time (ms)", yLabel: "Velocity (px/ms)" },
-    },
-    {
-      metric: "a",
-      label: "Acceleration",
-      axisLabels: { xLabel: "Time (ms)", yLabel: "Acceleration (px/ms²)" },
-    },
-  ];
-
-  const plotColors: PlotColors = {
-    realData: "#f0a030",
-    smoothData: "#2ec4a0",
+    onCompletion(data);
   };
 
   return (
     <>
-      <div className="w-[320px] flex flex-col justify-center shrink-0">
+      <div className="flex flex-col justify-center shrink-0 flex-1">
         <Card
           className="border-2 border-gray-600 hover:scale-101 w-full
                     transition-transform duration-100 cursor-pointer flex flex-col h-full"
@@ -83,7 +63,7 @@ function FlickingTestCard() {
             </CardContent>
           </CardDescription>
 
-          <CardFooter className="px-2 flex flex-row justify-between min-h-30">
+          <CardFooter className="px-2 flex flex-row justify-around min-h-30">
             <div className="flex flex-col items-center justify-center gap-2 min-w-32">
               <div className="text-xs font-light text-gray-400 text-center">
                 PEAK VELOCITY
@@ -111,16 +91,6 @@ function FlickingTestCard() {
             </div>
           </CardFooter>
         </Card>
-
-        <TestResultsDashboard
-          data={frames}
-          title={"Flicking"}
-          defaultMetric={"v"}
-          metricButtonsConfig={metricButtonsConfig}
-          plotColors={plotColors}
-          open={sheetOpen}
-          onOpenChange={setSheetOpen}
-        />
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

@@ -12,17 +12,17 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import TrackingTestCanvas from "./TrackingTestCanvas";
-import TestResultsDashboard from "../TestResultsDashboard";
-import type { MetricButton, PlotColors } from "../TestResultsDashboard";
 import { calculateMetrics } from "@/utils/metricsCalculation";
 import type { PointerDataPoint } from "@/hooks/usePointerCapture";
 
-function TrackingTestCard() {
+export type TrackingTestProps = {
+  onCompletion: (data: PointerDataPoint[]) => void;
+};
+
+function TrackingTestCard({ onCompletion }: TrackingTestProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
   const [pointerData, setPointerData] = useState<PointerDataPoint[]>([]);
   const {
-    frames,
     avgVelocitiesX,
     avgVelocitiesY,
     avgAccelerationsX,
@@ -38,39 +38,12 @@ function TrackingTestCard() {
 
   const handleTestCompletion = (data: PointerDataPoint[]) => {
     setPointerData(data);
-  };
-
-  const metricButtonsConfig: MetricButton[] = [
-    {
-      metric: "vx",
-      label: "Velocity (x-axis)",
-      axisLabels: { xLabel: "Time (ms)", yLabel: "Velocity (px/ms)" },
-    },
-    {
-      metric: "vy",
-      label: "Velocity (y-axis)",
-      axisLabels: { xLabel: "Time (ms)", yLabel: "Velocity (px/ms)" },
-    },
-    {
-      metric: "ax",
-      label: "Acceleration (x-axis)",
-      axisLabels: { xLabel: "Time (ms)", yLabel: "Acceleration (px/ms²)" },
-    },
-    {
-      metric: "ay",
-      label: "Acceleration (y-axis)",
-      axisLabels: { xLabel: "Time (ms)", yLabel: "Acceleration (px/ms²)" },
-    },
-  ];
-
-  const plotColors: PlotColors = {
-    realData: "#2ec4a0",
-    smoothData: "#f0a030",
+    onCompletion(data);
   };
 
   return (
     <>
-      <div className="w-[320px] flex flex-col justify-center shrink-0">
+      <div className="flex flex-col justify-center shrink-0 flex-1">
         <Card
           className="border-2 border-gray-600 hover:scale-101 w-full
                     transition-transform duration-100 cursor-pointer min-h-2 
@@ -92,7 +65,7 @@ function TrackingTestCard() {
             </CardContent>
           </CardDescription>
 
-          <CardFooter className="px-2 flex flex-row justify-between min-h-30">
+          <CardFooter className="px-2 flex flex-row justify-around min-h-30">
             <div className="flex flex-col items-center justify-center gap-2 min-w-32">
               <div className="text-xs font-light text-gray-400 text-center">
                 AVERAGE VELOCITY
@@ -112,7 +85,7 @@ function TrackingTestCard() {
 
             <Separator orientation="vertical" />
 
-            <div className="flex flex-col items-center justify-center gap-2 min-w-32">
+            <div className="flex flex-col items-center gap-2 min-w-32">
               <div className="text-xs font-light text-gray-400 text-center">
                 AVERAGE ACCELERATION
                 <br />
@@ -130,16 +103,6 @@ function TrackingTestCard() {
             </div>
           </CardFooter>
         </Card>
-
-        <TestResultsDashboard
-          data={frames}
-          title={"Tracking"}
-          defaultMetric={"vx"}
-          metricButtonsConfig={metricButtonsConfig}
-          plotColors={plotColors}
-          open={sheetOpen}
-          onOpenChange={setSheetOpen}
-        />
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
