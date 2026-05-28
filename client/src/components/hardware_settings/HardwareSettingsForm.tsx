@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import SearchableDropdown from "../SearchableDropdown";
 import { Input } from "../ui/input";
 import { Card, CardHeader } from "../ui/card";
-import { Button } from "../ui/button";
 import { gearData } from "@/mock_data/settings";
 
 function HardwareSettingsForm() {
@@ -16,10 +15,6 @@ function HardwareSettingsForm() {
     screenResolution: null as string | null,
     refreshRate: null as string | null,
   });
-
-  useEffect(() => {
-    console.log(form);
-  }, [form]);
 
   return (
     <Card className="w-full self-stretch">
