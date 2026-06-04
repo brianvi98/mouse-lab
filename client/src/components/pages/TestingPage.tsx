@@ -107,7 +107,7 @@ function TestingPage() {
     <PageContainer>
       <div className="flex flex-col gap-2">
         <HardwareSettingsForm />
-        <div className="flex gap-2 justify-between">
+        <div className="flex gap-2 justify-between mx-48">
           <TrackingTestCard onCompletion={onTrackingTestCompletion} />
           <FlickingTestCard onCompletion={onFlickingTestCompletion} />
         </div>
