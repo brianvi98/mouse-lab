@@ -81,7 +81,7 @@ function MetricPlotPanel({
 
   return (
     <div className="flex flex-col gap-2 border-2 border-gray-600 rounded-xs">
-      <div className="h-96">
+      <div className="h-148">
         <PlotArea
           data={data}
           selectedMetric={selectedMetric}
