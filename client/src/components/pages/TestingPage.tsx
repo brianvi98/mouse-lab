@@ -12,6 +12,14 @@ import type { Metric } from "@/utils/metricsCalculation";
 import { calculateMetrics } from "@/utils/metricsCalculation";
 import type { PointerDataPoint } from "@/hooks/usePointerCapture";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  hardwareSettingsFormSchema,
+  hardwareSettingsFormDefaultValues,
+  type HardwareSettingsFormValues,
+} from "../hardware_settings/hardwareSettingsFormSchema";
+
 export type AxisLabels = { xLabel: string; yLabel: string };
 
 export type MetricButton = {
@@ -26,6 +34,17 @@ export type PlotColors = {
 };
 
 function TestingPage() {
+  const form = useForm<HardwareSettingsFormValues>({
+    resolver: zodResolver(hardwareSettingsFormSchema),
+    defaultValues: hardwareSettingsFormDefaultValues,
+  });
+
+  const onSubmit = (data: HardwareSettingsFormValues) => {
+    alert("Settings saved");
+    console.log(trackingData);
+    console.log("Hardware settings:", data);
+  };
+
   const [trackingData, setTrackingData] = useState<PointerDataPoint[]>([]);
   const [flickingData, setFlickingData] = useState<PointerDataPoint[]>([]);
 
@@ -106,8 +125,12 @@ function TestingPage() {
   return (
     <PageContainer>
       <div className="flex flex-col gap-2">
-        <HardwareSettingsForm />
-        <div className="flex gap-2 justify-between mx-48">
+        <HardwareSettingsForm
+          control={form.control}
+          errors={form.formState.errors}
+          onSubmit={form.handleSubmit(onSubmit)}
+        />
+        <div className="mx-48 flex justify-between gap-2">
           <TrackingTestCard onCompletion={onTrackingTestCompletion} />
           <FlickingTestCard onCompletion={onFlickingTestCompletion} />
         </div>
