@@ -1,4 +1,9 @@
-export const gearData = {
+export type Option = {
+  label: string;
+  value: string;
+};
+
+export const gearData: Record<string, Option[]> = {
   mice: [
     {
       label: "Logitech G Pro X Superlight",
