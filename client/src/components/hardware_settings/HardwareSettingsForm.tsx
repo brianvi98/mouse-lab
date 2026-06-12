@@ -25,7 +25,12 @@ function HardwareSettingsForm({ control, errors, onSubmit }: HardwareSettingsFor
               name="mouse"
               control={control}
               render={({ field }) => (
-                <SearchableDropdown label="Mouse" items={gearData.mice} value={field.value} onChange={field.onChange} />
+                <SearchableDropdown
+                  header="Mouse"
+                  items={gearData.mice}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
               )}
             />
             <p className="text-destructive min-h-5 text-sm">{errors.mouse?.message}</p>
@@ -37,7 +42,7 @@ function HardwareSettingsForm({ control, errors, onSubmit }: HardwareSettingsFor
               control={control}
               render={({ field }) => (
                 <SearchableDropdown
-                  label="Mouse Pad"
+                  header="Mouse Pad"
                   items={gearData.mousepads}
                   value={field.value}
                   onChange={field.onChange}
@@ -53,7 +58,7 @@ function HardwareSettingsForm({ control, errors, onSubmit }: HardwareSettingsFor
               control={control}
               render={({ field }) => (
                 <SearchableDropdown
-                  label="Mouse Skates"
+                  header="Mouse Skates"
                   items={gearData.mouseskates}
                   value={field.value}
                   onChange={field.onChange}
@@ -69,7 +74,7 @@ function HardwareSettingsForm({ control, errors, onSubmit }: HardwareSettingsFor
               control={control}
               render={({ field }) => (
                 <SearchableDropdown
-                  label="Polling Rate"
+                  header="Polling Rate"
                   items={gearData.pollingRate}
                   value={field.value}
                   onChange={field.onChange}
@@ -119,7 +124,7 @@ function HardwareSettingsForm({ control, errors, onSubmit }: HardwareSettingsFor
               control={control}
               render={({ field }) => (
                 <SearchableDropdown
-                  label="Screen Resolution"
+                  header="Screen Resolution"
                   items={gearData.screenResolution}
                   value={field.value}
                   onChange={field.onChange}
@@ -135,7 +140,7 @@ function HardwareSettingsForm({ control, errors, onSubmit }: HardwareSettingsFor
               control={control}
               render={({ field }) => (
                 <SearchableDropdown
-                  label="Refresh Rate"
+                  header="Refresh Rate"
                   items={gearData.refreshRate}
                   value={field.value}
                   onChange={field.onChange}
