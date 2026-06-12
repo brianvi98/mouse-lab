@@ -6,21 +6,19 @@ export type DropdownOption = {
 };
 
 type SearchableDropdownProps = {
-  label: string;
+  header: string;
   items: DropdownOption[];
   value: string;
-  onChange: (value: string | null) => void;
+  onChange: (value: DropdownOption | null) => void;
 };
 
-function SearchableDropdown({ label, items, value, onChange }: SearchableDropdownProps) {
-  const selectedLabel = items.find((i) => i.value === value)?.label ?? "";
-
+function SearchableDropdown({ header, items, value, onChange }: SearchableDropdownProps) {
   return (
     <div className="flex w-full flex-col gap-1">
-      <div>{label}</div>
+      <div>{header}</div>
 
-      <Combobox items={items} value={value ?? ""} onValueChange={onChange}>
-        <ComboboxInput value={selectedLabel} placeholder="Select..." />
+      <Combobox items={items} value={items.find((i) => i.value === value) ?? null} onValueChange={onChange}>
+        <ComboboxInput placeholder="Select..." />
         <ComboboxContent>
           <ComboboxEmpty>No items found.</ComboboxEmpty>
           <ComboboxList>
