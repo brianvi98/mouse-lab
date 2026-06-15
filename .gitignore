@@ -14,34 +14,55 @@
 # TypeScript
 *.tsbuildinfo
 
-# Java / Spring Boot
-/server/target/
-/server/*.class
-/server/*.jar
-/server/*.war
-/server/*.log
+# Spring Boot / Gradle
+/server/.gradle/
+/server/build/
 
-# Maven wrapper
-/server/.mvn/wrapper/maven-wrapper.jar
+!/server/gradle/wrapper/gradle-wrapper.jar
 
-# env
+# Spring Initializr
+/server/HELP.md
+
+# Environment Variables
 /client/.env
 /client/.env.*
-/client/!.env.example
+!/client/.env.example
 
 /server/.env
 /server/.env.*
-/server/!.env.example
+!/server/.env.example
 
-# IDE files
+/.env
+/.env.*
+
+# IDE
 .idea/
 .vscode/
-*.iml
 
-# OS files
-.DS_Store
-Thumbs.db
+*.iml
+*.ipr
+*.iws
+
+# Eclipse / STS
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 
 # Logs
 logs/
 *.log
+
+# OS Files
+.DS_Store
+Thumbs.db
