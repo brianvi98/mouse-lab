@@ -2,24 +2,20 @@ package com.brianvi98.mouselab.common.envelope;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
-@Setter
 public class ApiResponse<T> {
 
-    private int status;
-    private T data;
-    private String error;
-    private LocalDateTime timestamp;
-    private String path;
+    private final T data;
+    private final String error;
+    private final Instant timestamp;
+    private final String path;
 
-    private ApiResponse(int status, T data, String error, LocalDateTime timestamp, String path) {
-        this.status = status;
+    private ApiResponse(T data, String error, Instant timestamp, String path) {
         this.data = data;
         this.error = error;
         this.timestamp = timestamp;
@@ -27,14 +23,14 @@ public class ApiResponse<T> {
     }
 
     public static <T> ApiResponse<T> success(T data) {
-        return new ApiResponse<>(200, data, null, LocalDateTime.now(), currentPath());
+        return new ApiResponse<>(data, null, Instant.now(), currentPath());
     }
 
-    public static <T> ApiResponse<T> error(String errorMessage, int status) {
-        return new ApiResponse<>(status, null, errorMessage, LocalDateTime.now(), currentPath());
+    public static <T> ApiResponse<T> error(String errorMessage) {
+        return new ApiResponse<>(null, errorMessage, Instant.now(), currentPath());
     }
 
-    public static String currentPath() {
+    private static String currentPath() {
         ServletRequestAttributes attrs =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
