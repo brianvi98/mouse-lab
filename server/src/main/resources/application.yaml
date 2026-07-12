@@ -11,8 +11,11 @@ spring:
     servlet:
       path: /api/v1
 
-  jpa:
-    show-sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://striking-goblin-49.clerk.accounts.dev
 
   flyway:
     enabled: false
