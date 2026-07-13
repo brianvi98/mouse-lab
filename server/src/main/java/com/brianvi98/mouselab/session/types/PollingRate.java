@@ -1,5 +1,7 @@
 package com.brianvi98.mouselab.session.types;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +19,12 @@ public enum PollingRate {
 
     private final int value;
 
+    @JsonValue
+    public int getValue() {
+        return value;
+    }
+
+    @JsonCreator
     public static PollingRate fromValue(int value) throws IllegalArgumentException {
         for (PollingRate r : PollingRate.values()) {
             if (r.getValue() == value) return r;

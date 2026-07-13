@@ -1,5 +1,7 @@
 package com.brianvi98.mouselab.session.types;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +23,12 @@ public enum RefreshRate {
 
     private final int value;
 
+    @JsonValue
+    public int getValue() {
+        return value;
+    }
+
+    @JsonCreator
     public static RefreshRate fromValue(int value) {
 
         for (RefreshRate refreshRate : values()) {

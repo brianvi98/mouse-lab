@@ -1,5 +1,7 @@
 package com.brianvi98.mouselab.session.types;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -12,6 +14,12 @@ public enum TrialType {
 
     private final String value;
 
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+
+    @JsonCreator
     public TrialType fromValue(String trial) throws IllegalArgumentException {
 
         for (TrialType t: values()) {
