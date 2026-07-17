@@ -121,11 +121,9 @@ class SessionControllerTest {
                 ))
                 .build();
 
-
         session.addTrial(trial);
 
         session = sessionRepository.save(session);
-
 
         mockMvc.perform(
                         get("/sessions/{id}", session.getId())
@@ -146,5 +144,82 @@ class SessionControllerTest {
                         .exists())
                 .andExpect(jsonPath("$.data.trials[0].metrics.frameSamples.length()")
                         .value(1));
+    }
+
+    @Test
+    void getSession_returns403_whenNotOwnedByRequester() throws Exception {
+
+        String clerkUserId = "user_test_123";
+
+        User user = new User();
+        user.setClerkUserId(clerkUserId);
+
+        user = userRepository.save(user);
+
+        Mouse mouse = Mouse.builder()
+                .brand("Ultra mice")
+                .model("Very light")
+                .build();
+
+        Mousepad mousepad = Mousepad.builder()
+                .brand("Super pad")
+                .model("Very fast")
+                .build();
+
+        Skates skates = Skates.builder()
+                .brand("Mega skates")
+                .model("Very smooth")
+                .build();
+
+        mouseRepository.save(mouse);
+        mousepadRepository.save(mousepad);
+        skatesRepository.save(skates);
+
+        SessionSettings settings = SessionSettings.builder()
+                .pollingRateHz(PollingRate.HZ_1000)
+                .dpi(800)
+                .windowsSensitivity(6)
+                .screenResolution(ScreenResolution.RES_1920_1080)
+                .refreshRateHz(RefreshRate.HZ_144)
+                .mouse(mouse)
+                .mousepad(mousepad)
+                .skates(skates)
+                .build();
+
+        Session session = Session.builder()
+                .user(user)
+                .sessionSettings(settings)
+                .trials(new ArrayList<>())
+                .build();
+
+        Trial trial = Trial.builder()
+                .trialType(TrialType.TRACKING)
+                .pointerSamples(List.of(
+                        new PointerSample(
+                                100,
+                                100,
+                                0,
+                                0,
+                                0
+                        ),
+                        new PointerSample(
+                                105,
+                                102,
+                                5,
+                                2,
+                                16
+                        )
+                ))
+                .build();
+
+        session.addTrial(trial);
+
+        session = sessionRepository.save(session);
+
+        mockMvc.perform(
+                        get("/sessions/{id}", session.getId())
+                                .with(jwt().jwt(jwt -> jwt.subject("a-completely-different-clerk-id")))
+                )
+                .andExpect(status().isForbidden());
     }
 }
