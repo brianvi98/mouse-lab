@@ -56,11 +56,11 @@ function TestingPage() {
     setFlickingData(data);
   };
 
-  const { frames: trackingFrames } = useMemo(() => {
+  const { frameSamples: trackingFrames } = useMemo(() => {
     return calculateMetrics(trackingData);
   }, [trackingData]);
 
-  const { frames: flickingFrames } = useMemo(() => {
+  const { frameSamples: flickingFrames } = useMemo(() => {
     return calculateMetrics(flickingData);
   }, [flickingData]);
 
