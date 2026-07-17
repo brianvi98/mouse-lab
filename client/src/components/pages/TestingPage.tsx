@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 
 import type { Metric } from "@/utils/metricsCalculation";
 import { calculateMetrics } from "@/utils/metricsCalculation";
-import type { PointerDataPoint } from "@/hooks/usePointerCapture";
+import type { PointerSample } from "@/hooks/usePointerCapture";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -45,14 +45,14 @@ function TestingPage() {
     console.log("Hardware settings:", data);
   };
 
-  const [trackingData, setTrackingData] = useState<PointerDataPoint[]>([]);
-  const [flickingData, setFlickingData] = useState<PointerDataPoint[]>([]);
+  const [trackingData, setTrackingData] = useState<PointerSample[]>([]);
+  const [flickingData, setFlickingData] = useState<PointerSample[]>([]);
 
-  const onTrackingTestCompletion = (data: PointerDataPoint[]) => {
+  const onTrackingTestCompletion = (data: PointerSample[]) => {
     setTrackingData(data);
   };
 
-  const onFlickingTestCompletion = (data: PointerDataPoint[]) => {
+  const onFlickingTestCompletion = (data: PointerSample[]) => {
     setFlickingData(data);
   };
 

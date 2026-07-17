@@ -1,4 +1,4 @@
-import type { PointerDataPoint } from "@/hooks/usePointerCapture";
+import type { PointerSample } from "@/hooks/usePointerCapture";
 import type { FrameSample } from "@/types/framesample";
 
 export type Axis = "x" | "y";
@@ -26,7 +26,7 @@ export type calculatedMetrics = {
 };
 
 // pointer data point shape: {x, y, dx, dy, t}
-export const calculateVelocity: (data: PointerDataPoint[], axis: Axis) => VelocityInfo[] = (data, axis) => {
+export const calculateVelocity: (data: PointerSample[], axis: Axis) => VelocityInfo[] = (data, axis) => {
   if (data.length < 2) return [];
 
   return data.slice(1).map((pt, i) => {
@@ -40,7 +40,7 @@ export const calculateVelocity: (data: PointerDataPoint[], axis: Axis) => Veloci
 };
 
 // for flicking (direction agnostic)
-export const calculateVelocityMagnitude: (data: PointerDataPoint[]) => VelocityInfo[] = (data) => {
+export const calculateVelocityMagnitude: (data: PointerSample[]) => VelocityInfo[] = (data) => {
   if (data.length < 2) return [];
 
   const velocitiesX: VelocityInfo[] = calculateVelocity(data, "x");
@@ -66,7 +66,7 @@ export const calculateAcceleration: (velocityData: VelocityInfo[]) => Accelerati
 };
 
 // again, for flicking (direction agnostic)
-export const calculateAccelerationMagnitude: (data: PointerDataPoint[]) => AccelerationInfo[] = (data) => {
+export const calculateAccelerationMagnitude: (data: PointerSample[]) => AccelerationInfo[] = (data) => {
   const velocitiesMagnitude = calculateVelocityMagnitude(data);
   return calculateAcceleration(velocitiesMagnitude);
 };
@@ -75,7 +75,7 @@ const average = (arr: number[]) => {
   return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 };
 
-export const calculateMetrics = (data: PointerDataPoint[]): calculatedMetrics => {
+export const calculateMetrics = (data: PointerSample[]): calculatedMetrics => {
   const velocitiesX = calculateVelocity(data, "x");
   const velocitiesY = calculateVelocity(data, "y");
   const accelerationsX = calculateAcceleration(velocitiesX);
