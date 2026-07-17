@@ -8,6 +8,9 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "mousepad", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"brand", "model"})
 })
