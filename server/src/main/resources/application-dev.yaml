@@ -1,0 +1,9 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+    show-sql: true
+
+  config:
+    import: optional:file:./.env[.properties]
