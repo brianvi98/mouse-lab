@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -55,75 +56,12 @@ class SessionControllerTest {
     @Autowired
     SkatesRepository skatesRepository;
 
+    private final String clerkUserId = "user_test_123";
+
     @Test
     void getSession_returnsMetricsForOwnedSession() throws Exception {
 
-        String clerkUserId = "user_test_123";
-
-        User user = new User();
-        user.setClerkUserId(clerkUserId);
-
-        user = userRepository.save(user);
-
-        Mouse mouse = Mouse.builder()
-                .brand("Ultra mice")
-                .model("Very light")
-                .build();
-
-        Mousepad mousepad = Mousepad.builder()
-                .brand("Super pad")
-                .model("Very fast")
-                .build();
-
-        Skates skates = Skates.builder()
-                .brand("Mega skates")
-                .model("Very smooth")
-                .build();
-
-        mouseRepository.save(mouse);
-        mousepadRepository.save(mousepad);
-        skatesRepository.save(skates);
-
-        SessionSettings settings = SessionSettings.builder()
-                .pollingRateHz(PollingRate.HZ_1000)
-                .dpi(800)
-                .windowsSensitivity(6)
-                .screenResolution(ScreenResolution.RES_1920_1080)
-                .refreshRateHz(RefreshRate.HZ_144)
-                .mouse(mouse)
-                .mousepad(mousepad)
-                .skates(skates)
-                .build();
-
-        Session session = Session.builder()
-                .user(user)
-                .sessionSettings(settings)
-                .trials(new ArrayList<>())
-                .build();
-
-        Trial trial = Trial.builder()
-                .trialType(TrialType.TRACKING)
-                .pointerSamples(List.of(
-                        new PointerSample(
-                                100,
-                                100,
-                                0,
-                                0,
-                                0
-                        ),
-                        new PointerSample(
-                                105,
-                                102,
-                                5,
-                                2,
-                                16
-                        )
-                ))
-                .build();
-
-        session.addTrial(trial);
-
-        session = sessionRepository.save(session);
+        Session session = createMockSession();
 
         mockMvc.perform(
                         get("/sessions/{id}", session.getId())
@@ -149,7 +87,31 @@ class SessionControllerTest {
     @Test
     void getSession_returns403_whenNotOwnedByRequester() throws Exception {
 
-        String clerkUserId = "user_test_123";
+        Session session = createMockSession();
+
+        mockMvc.perform(
+                        get("/sessions/{id}", session.getId())
+                                .with(jwt().jwt(jwt -> jwt.subject("a-completely-different-clerk-id")))
+                )
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getSession_returns401_whenNoTokenProvided() throws Exception {
+        mockMvc.perform(get("/sessions/{id}", UUID.randomUUID()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getSession_returns404_whenSessionDoesNotExist() throws Exception {
+        mockMvc.perform(
+                        get("/sessions/{id}", UUID.randomUUID())
+                                .with(jwt().jwt(jwt -> jwt.subject("any-user")))
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    private Session createMockSession() {
 
         User user = new User();
         user.setClerkUserId(clerkUserId);
@@ -214,12 +176,6 @@ class SessionControllerTest {
 
         session.addTrial(trial);
 
-        session = sessionRepository.save(session);
-
-        mockMvc.perform(
-                        get("/sessions/{id}", session.getId())
-                                .with(jwt().jwt(jwt -> jwt.subject("a-completely-different-clerk-id")))
-                )
-                .andExpect(status().isForbidden());
+        return sessionRepository.save(session);
     }
 }
