@@ -1,4 +1,5 @@
 import type { PointerDataPoint } from "@/hooks/usePointerCapture";
+import type { FrameSample } from "@/types/framesample";
 
 export type Axis = "x" | "y";
 
@@ -14,18 +15,8 @@ export type AccelerationInfo = {
   time: number;
 };
 
-export type FrameSample = {
-  vx: number;
-  vy: number;
-  ax: number;
-  ay: number;
-  v: number;
-  a: number;
-  t: number;
-};
-
 export type calculatedMetrics = {
-  frameSamples: Frame[];
+  frameSamples: FrameSample[];
   avgVelocitiesX: number;
   avgVelocitiesY: number;
   avgAccelerationsX: number;
@@ -92,10 +83,10 @@ export const calculateMetrics = (data: PointerDataPoint[]): calculatedMetrics =>
   const velocitiesMagnitude = calculateVelocityMagnitude(data);
   const accelerationsMagnitude = calculateAccelerationMagnitude(data);
 
-  const frames: Frame[] = [];
+  const frameSamples: FrameSample[] = [];
 
   for (let i = 0; i < velocitiesX.length; i++) {
-    frames.push({
+    frameSamples.push({
       t: velocitiesX[i].time,
       vx: velocitiesX[i]?.velocity ?? 0,
       vy: velocitiesY[i]?.velocity ?? 0,
@@ -116,7 +107,7 @@ export const calculateMetrics = (data: PointerDataPoint[]): calculatedMetrics =>
     : 0;
 
   return {
-    frames,
+    frameSamples,
     avgVelocitiesX,
     avgVelocitiesY,
     avgAccelerationsX,
