@@ -15,7 +15,7 @@ export type AccelerationInfo = {
   time: number;
 };
 
-export type calculatedMetrics = {
+export type CalculatedMetrics = {
   frameSamples: FrameSample[];
   avgVelocitiesX: number;
   avgVelocitiesY: number;
@@ -75,7 +75,7 @@ const average = (arr: number[]) => {
   return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 };
 
-export const calculateMetrics = (data: PointerSample[]): calculatedMetrics => {
+export const calculateMetrics = (data: PointerSample[]): CalculatedMetrics => {
   const velocitiesX = calculateVelocity(data, "x");
   const velocitiesY = calculateVelocity(data, "y");
   const accelerationsX = calculateAcceleration(velocitiesX);
