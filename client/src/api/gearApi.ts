@@ -1,5 +1,5 @@
 import { api } from "./baseApi";
-import type { GearResponse } from "./types/gear";
+import type { GearResponse } from "../types/gear";
 
 const gearApi = api.injectEndpoints({
   endpoints: (build) => ({
