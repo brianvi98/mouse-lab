@@ -6,6 +6,7 @@ import SignInPage from "./components/pages/SignInPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import { Routes, Route } from "react-router-dom";
+import HistoryPage from "./components/pages/HistoryPage";
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
           path="/history"
           element={
             <ProtectedRoute>
-              <p>History</p>
+              <HistoryPage />
             </ProtectedRoute>
           }
         />

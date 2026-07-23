@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 
 import { usePointerCapture } from "@/hooks/usePointerCapture";
-import type { PointerDataPoint } from "@/hooks/usePointerCapture";
+import type { PointerSample } from "@/hooks/usePointerCapture";
 
 type TestParameters = {
   axis: "x" | "y";
@@ -9,12 +9,10 @@ type TestParameters = {
 };
 
 type TrackingTestCanvasProps = {
-  onCompletion: (data: PointerDataPoint[]) => void;
+  onCompletion: (data: PointerSample[]) => void;
 };
 
-function TrackingTestCanvas({
-  onCompletion = () => {},
-}: TrackingTestCanvasProps) {
+function TrackingTestCanvas({ onCompletion = () => {} }: TrackingTestCanvasProps) {
   const PROGRESS_FINISH_THRESHOLD = 99.5;
   const PROGRESS_RESET_THRESHOLD = 10;
 
@@ -43,7 +41,7 @@ function TrackingTestCanvas({
   // * the pointer capture hook will only snapshot the most recent data when
   // isRecording is toggled. This is required to aggregate the data points from
   // each individual trial while ignoring idle time between trials.
-  const aggregatePointerData = useRef<PointerDataPoint[]>([]);
+  const aggregatePointerData = useRef<PointerSample[]>([]);
   // * likewise, the pointer hook runs multiple times in this test scenario.
   // the timestamps will reset each time, so we need this to put them all
   // on the same timescale when we aggregate the data
@@ -52,8 +50,7 @@ function TrackingTestCanvas({
   // - Test logic
   useEffect(() => {
     if (trialIndex < trials.length) {
-      const progress =
-        trials[trialIndex].axis === "x" ? horizontalProgress : verticalProgress;
+      const progress = trials[trialIndex].axis === "x" ? horizontalProgress : verticalProgress;
 
       if (progress >= PROGRESS_FINISH_THRESHOLD && !swipeActive) {
         const adjusted = pointerData.current.map((p) => ({
@@ -64,10 +61,7 @@ function TrackingTestCanvas({
         setTrialIndex((i) => i + 1);
         setHorizontalProgress(0);
         setVerticalProgress(0);
-        aggregatePointerData.current = [
-          ...aggregatePointerData.current,
-          ...adjusted,
-        ];
+        aggregatePointerData.current = [...aggregatePointerData.current, ...adjusted];
         timeOffset.current = adjusted.at(-1)?.t ?? timeOffset.current;
         setIsRecording(false);
       } else if (progress < PROGRESS_RESET_THRESHOLD && swipeActive) {
@@ -90,20 +84,14 @@ function TrackingTestCanvas({
   const handleMouseMoveHorizontal = (e: React.PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const percent = Math.max(
-      horizontalProgress,
-      Math.min(100, (x / rect.width) * 100),
-    );
+    const percent = Math.max(horizontalProgress, Math.min(100, (x / rect.width) * 100));
     setHorizontalProgress(percent);
   };
 
   const handleMouseMoveVertical = (e: React.PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const y = e.clientY - rect.top;
-    const percent = Math.max(
-      verticalProgress,
-      Math.min(100, (y / rect.height) * 100),
-    );
+    const percent = Math.max(verticalProgress, Math.min(100, (y / rect.height) * 100));
     setVerticalProgress(percent);
   };
 
@@ -117,54 +105,36 @@ function TrackingTestCanvas({
   if (trialIndex >= trials.length) {
     return (
       <div className="text-center">
-        <p className="text-3xl mt-32">Test Complete!</p>
-        <p className="text-m">
-          Press Escape to exit this scenario and view your results.
-        </p>
+        <p className="mt-32 text-3xl">Test Complete!</p>
+        <p className="text-m">Press Escape to exit this scenario and view your results.</p>
       </div>
     );
   }
 
   return (
-    <div
-      ref={canvasRef}
-      className="w-full h-full bg-canvas flex items-center justify-center outline-2"
-    >
+    <div ref={canvasRef} className="bg-canvas flex h-full w-full items-center justify-center outline-2">
       {!isRecording && (
         <div
-          className="flex justify-center items-center w-full h-full bg-canvas
-        absolute opacity-75"
+          className="bg-canvas absolute flex h-full w-full items-center justify-center opacity-75"
           onClick={clickStartTest}
         >
           <div className="flex flex-col items-center">
             <p className="text-3xl">CLICK TO START</p>
             <p className="text-m">
-              (Align your cursor with the left edge of the bar and swipe
-              smoothly to the right, maintaining a steady pace)
+              (Align your cursor with the left edge of the bar and swipe smoothly to the right, maintaining a steady
+              pace)
             </p>
           </div>
         </div>
       )}
       {trials[trialIndex].axis === "x" && (
-        <div
-          className="border border-track-teal bg-gray-400 w-full h-32"
-          onMouseMove={handleMouseMoveHorizontal}
-        >
-          <div
-            className="bg-track-teal h-full"
-            style={{ width: `${horizontalProgress}%` }}
-          ></div>
+        <div className="border-track-teal h-32 w-full border bg-gray-400" onMouseMove={handleMouseMoveHorizontal}>
+          <div className="bg-track-teal h-full" style={{ width: `${horizontalProgress}%` }}></div>
         </div>
       )}
       {trials[trialIndex].axis === "y" && (
-        <div
-          className="border border-track-teal bg-gray-400 h-full w-32"
-          onMouseMove={handleMouseMoveVertical}
-        >
-          <div
-            className="bg-track-teal w-full"
-            style={{ height: `${verticalProgress}%` }}
-          ></div>
+        <div className="border-track-teal h-full w-32 border bg-gray-400" onMouseMove={handleMouseMoveVertical}>
+          <div className="bg-track-teal w-full" style={{ height: `${verticalProgress}%` }}></div>
         </div>
       )}
     </div>
