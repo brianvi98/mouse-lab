@@ -5,8 +5,10 @@ import com.brianvi98.mouselab.common.envelope.PagedData;
 import com.brianvi98.mouselab.session.dto.request.SessionSubmissionRequest;
 import com.brianvi98.mouselab.session.dto.response.SessionDetailResponse;
 import com.brianvi98.mouselab.session.dto.response.SessionSummaryResponse;
+import com.brianvi98.mouselab.session.dto.response.SessionsStatsResponse;
 import com.brianvi98.mouselab.session.model.Session;
 import com.brianvi98.mouselab.session.service.SessionService;
+import com.brianvi98.mouselab.session.service.SessionStatsService;
 import com.brianvi98.mouselab.user.User;
 import com.brianvi98.mouselab.user.UserService;
 import jakarta.validation.Valid;
@@ -30,6 +32,7 @@ public class SessionController {
 
     private final UserService userService;
     private final SessionService sessionService;
+    private final SessionStatsService sessionStatsService;
 
     @GetMapping
     public ApiResponse<PagedData<SessionSummaryResponse>> getSessionsByUser(
@@ -79,5 +82,16 @@ public class SessionController {
         sessionService.deleteSession(user, id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/stats")
+    public ApiResponse<SessionsStatsResponse> getSessionsStats(
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+
+        UUID userId = userService.getUserIdByClerkUserId(jwt.getSubject());
+        SessionsStatsResponse stats = sessionStatsService.getUserSessionsStats(userId);
+
+        return ApiResponse.success(stats);
     }
 }
