@@ -19,7 +19,7 @@ public enum RefreshRate {
     HZ_240(240),
     HZ_360(360),
     HZ_480(480),
-    HZ_540(480);
+    HZ_540(540);
 
     private final int value;
 
