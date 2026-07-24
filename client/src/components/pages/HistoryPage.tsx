@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useGetSessionsQuery } from "../../api/sessionsApi";
 import PageContainer from "../PageContainer";
 import SessionSummaryRow from "../SessionSummaryRow";
+import Spinner from "../Spinner";
+import { FolderOpen } from "lucide-react";
 
 function getVisiblePages(currentPage: number, totalPages: number) {
   if (totalPages <= 7) {
@@ -48,9 +50,21 @@ function HistoryPage() {
       {/* Session rows */}
       <h2 className="text-2xl">Past Sessions</h2>
       <div className="flex min-h-180 w-full flex-col gap-3">
-        {isLoading
-          ? Array.from({ length: 10 }).map((_, i) => <SessionSummaryRow key={i} isLoading />)
-          : items.map((item) => <SessionSummaryRow key={item.id} summary={item} isLoading={false} />)}
+        {items.length === 0 && (
+          <div className="flex flex-col items-center">
+            <FolderOpen className="mt-6 h-24 w-24" />
+            <h2 className="mt-6 text-xl">
+              There's nothing here! Go to the Testing page to perform your trials and create a session.
+            </h2>
+          </div>
+        )}
+        {isLoading ? (
+          <div className="flex w-full items-center justify-center">
+            <Spinner />
+          </div>
+        ) : (
+          items.map((item) => <SessionSummaryRow key={item.id} summary={item} isLoading={false} />)
+        )}
       </div>
 
       {/* Pagination */}
