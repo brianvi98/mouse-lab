@@ -1,6 +1,5 @@
 package com.brianvi98.mouselab.gear.mousepad;
 
-import com.brianvi98.mouselab.gear.mouse.Mouse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
