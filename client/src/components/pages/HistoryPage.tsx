@@ -4,6 +4,7 @@ import PageContainer from "../PageContainer";
 import SessionSummaryRow from "../SessionSummaryRow";
 import Spinner from "../Spinner";
 import { FolderOpen } from "lucide-react";
+import SessionsStats from "../SessionsStats";
 
 function getVisiblePages(currentPage: number, totalPages: number) {
   if (totalPages <= 7) {
@@ -47,6 +48,7 @@ function HistoryPage() {
 
   return (
     <PageContainer className="flex flex-col gap-4">
+      <SessionsStats />
       {/* Session rows */}
       <h2 className="text-2xl">Past Sessions</h2>
       <div className="flex min-h-180 w-full flex-col gap-3">
