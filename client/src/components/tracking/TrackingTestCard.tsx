@@ -39,7 +39,7 @@ function TrackingTestCard({ onCompletion }: TrackingTestProps) {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-track-teal">Tracking Test</CardTitle>
             <div className="w-25 rounded-sm border py-0.5 text-center">
-              {!frames.length ? "INCOMPLETE" : "COMPLETE"}
+              {!pointerData.length ? "INCOMPLETE" : "COMPLETE"}
             </div>
           </CardHeader>
           <CardDescription className="align-center flex flex-1 flex-col justify-center py-20">
