@@ -37,17 +37,6 @@ function Navbar() {
           <ChartLine className="size-4" />
           History
         </NavLink>
-        <NavLink
-          to="/about"
-          className={({ isActive }) =>
-            `flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors duration-100 ${
-              isActive ? "bg-gray-800 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"
-            }`
-          }
-        >
-          <Info className="size-4" />
-          About
-        </NavLink>
       </div>
 
       <div className="flex items-center gap-1">
