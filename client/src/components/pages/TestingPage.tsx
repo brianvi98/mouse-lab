@@ -1,140 +1,102 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 
 import HardwareSettingsForm from "../hardware_settings/HardwareSettingsForm";
 import TrackingTestCard from "../tracking/TrackingTestCard";
 import FlickingTestCard from "../flicking/FlickingTestCard";
-import MetricPlotPanel from "../plots/MetricPlotsPanel";
 import PageContainer from "../PageContainer";
 
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
-
-import type { Metric } from "@/utils/metricsCalculation";
+import MetricPlotsDashboard from "../plots/MetricPlotsDashboard";
 import { calculateMetrics } from "@/utils/metricsCalculation";
-import type { PointerDataPoint } from "@/hooks/usePointerCapture";
+import type { PointerSample } from "@/hooks/usePointerCapture";
 
-export type AxisLabels = { xLabel: string; yLabel: string };
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  hardwareSettingsFormSchema,
+  hardwareSettingsFormDefaultValues,
+  type HardwareSettingsFormValues,
+} from "../hardware_settings/hardwareSettingsFormSchema";
 
-export type MetricButton = {
-  metric: Metric;
-  label: string;
-  axisLabels: AxisLabels;
-};
+import { useCreateSessionMutation } from "@/api/sessionsApi";
+import type { CreateSessionRequest, TrialType } from "@/types/sessions";
+import type { PollingRate, RefreshRate, ScreenResolution } from "@/types/gearsettings";
 
-export type PlotColors = {
-  realData: React.CSSProperties["color"];
-  smoothData: React.CSSProperties["color"];
-};
+import { toast } from "sonner";
 
 function TestingPage() {
-  const [trackingData, setTrackingData] = useState<PointerDataPoint[]>([]);
-  const [flickingData, setFlickingData] = useState<PointerDataPoint[]>([]);
+  const form = useForm<HardwareSettingsFormValues>({
+    resolver: zodResolver(hardwareSettingsFormSchema),
+    defaultValues: hardwareSettingsFormDefaultValues,
+  });
 
-  const onTrackingTestCompletion = (data: PointerDataPoint[]) => {
+  const [trackingData, setTrackingData] = useState<PointerSample[]>([]);
+  const [flickingData, setFlickingData] = useState<PointerSample[]>([]);
+  const [sessionSaved, setSessionSaved] = useState(false);
+
+  const [createSession] = useCreateSessionMutation();
+
+  const onTrackingTestCompletion = (data: PointerSample[]) => {
     setTrackingData(data);
+    setSessionSaved(false);
   };
 
-  const onFlickingTestCompletion = (data: PointerDataPoint[]) => {
+  const onFlickingTestCompletion = (data: PointerSample[]) => {
     setFlickingData(data);
+    setSessionSaved(false);
   };
 
-  const { frames: trackingFrames } = useMemo(() => {
+  const { frameSamples: trackingFrames } = useMemo(() => {
     return calculateMetrics(trackingData);
   }, [trackingData]);
 
-  const { frames: flickingFrames } = useMemo(() => {
+  const { frameSamples: flickingFrames } = useMemo(() => {
     return calculateMetrics(flickingData);
   }, [flickingData]);
 
-  useEffect(() => {
-    console.log(trackingData);
-  }, [trackingData]);
+  const isSubmitEnabled = (trackingData.length > 0 || flickingData.length > 0) && !sessionSaved;
 
-  const trackingConfig: {
-    metricsConfig: MetricButton[];
-    plotColors: PlotColors;
-  } = {
-    metricsConfig: [
-      {
-        metric: "vx",
-        label: "Velocity (x-axis)",
-        axisLabels: { xLabel: "Time (ms)", yLabel: "Velocity (px/ms)" },
+  const onSubmit = async (data: HardwareSettingsFormValues) => {
+    const payload: CreateSessionRequest = {
+      settings: {
+        pollingRateHz: Number(data.pollingRate) as PollingRate,
+        dpi: data.dpi,
+        windowsSensitivity: data.windowsSensitivity,
+        screenResolution: data.screenResolution as ScreenResolution,
+        refreshRateHz: Number(data.refreshRate) as RefreshRate,
+        mouseId: data.mouse,
+        mousepadId: data.mousePad,
+        skatesId: data.mouseSkates,
       },
-      {
-        metric: "vy",
-        label: "Velocity (y-axis)",
-        axisLabels: { xLabel: "Time (ms)", yLabel: "Velocity (px/ms)" },
-      },
-      {
-        metric: "ax",
-        label: "Acceleration (x-axis)",
-        axisLabels: { xLabel: "Time (ms)", yLabel: "Acceleration (px/ms²)" },
-      },
-      {
-        metric: "ay",
-        label: "Acceleration (y-axis)",
-        axisLabels: { xLabel: "Time (ms)", yLabel: "Acceleration (px/ms²)" },
-      },
-    ],
-    plotColors: {
-      realData: "#2ec4a0",
-      smoothData: "#f0a030",
-    },
-  };
+      trials: [
+        ...(trackingData.length > 0 ? [{ trialType: "tracking" as TrialType, pointerSamples: trackingData }] : []),
+        ...(flickingData.length > 0 ? [{ trialType: "flicking" as TrialType, pointerSamples: flickingData }] : []),
+      ],
+    };
 
-  const flickingConfig: {
-    metricsConfig: MetricButton[];
-    plotColors: PlotColors;
-  } = {
-    metricsConfig: [
-      {
-        metric: "v",
-        label: "Velocity",
-        axisLabels: { xLabel: "Time (ms)", yLabel: "Velocity (px/ms)" },
-      },
-      {
-        metric: "a",
-        label: "Acceleration",
-        axisLabels: { xLabel: "Time (ms)", yLabel: "Acceleration (px/ms²)" },
-      },
-    ],
-    plotColors: {
-      realData: "#f0a030",
-      smoothData: "#2ec4a0",
-    },
+    try {
+      await createSession(payload).unwrap();
+
+      setSessionSaved(true);
+      toast.success("Session saved");
+    } catch (error) {
+      toast.error("Failed to save session");
+    }
   };
 
   return (
     <PageContainer>
       <div className="flex flex-col gap-2">
-        <HardwareSettingsForm />
-        <div className="flex gap-2 justify-between">
+        <HardwareSettingsForm
+          control={form.control}
+          errors={form.formState.errors}
+          submitEnabled={isSubmitEnabled}
+          onSubmit={form.handleSubmit(onSubmit)}
+        />
+        <div className="mx-6 flex flex-col justify-between gap-2 sm:mx-12 md:mx-24 md:flex-row md:flex-wrap lg:mx-48">
           <TrackingTestCard onCompletion={onTrackingTestCompletion} />
           <FlickingTestCard onCompletion={onFlickingTestCompletion} />
         </div>
-        <Tabs defaultValue="tracking">
-          <TabsList>
-            <TabsTrigger value="tracking">Tracking</TabsTrigger>
-            <TabsTrigger value="flicking">Flicking</TabsTrigger>
-          </TabsList>
-          <TabsContent value="tracking">
-            <MetricPlotPanel
-              data={trackingFrames}
-              defaultMetric="vx"
-              metricsConfig={trackingConfig.metricsConfig}
-              plotColors={trackingConfig.plotColors}
-              title="Tracking"
-            />
-          </TabsContent>
-          <TabsContent value="flicking">
-            <MetricPlotPanel
-              data={flickingFrames}
-              defaultMetric="v"
-              metricsConfig={flickingConfig.metricsConfig}
-              plotColors={flickingConfig.plotColors}
-              title="Flicking"
-            />
-          </TabsContent>
-        </Tabs>
+        <MetricPlotsDashboard trackingFrames={trackingFrames} flickingFrames={flickingFrames} />
       </div>
     </PageContainer>
   );

@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 
-export type PointerDataPoint = {
+export type PointerSample = {
   x: number; // absolute pixel position on x-axis
   y: number; // absolute pixel position on y-axis
   dx: number; // delta X since last event
@@ -18,7 +18,7 @@ export const usePointerCapture = <T extends HTMLElement>({
   targetRef: React.RefObject<T | null>;
   isRecording: boolean;
 }) => {
-  const data = useRef<PointerDataPoint[]>([]);
+  const data = useRef<PointerSample[]>([]);
   const startTime = useRef<number | null>(null);
   const prevPos = useRef<{ x: number; y: number } | null>(null);
 
@@ -59,16 +59,9 @@ export const usePointerCapture = <T extends HTMLElement>({
 
     const target = targetRef?.current ?? window;
 
-    target.addEventListener(
-      "pointermove",
-      handleMouseMoveEvent as EventListener,
-    );
+    target.addEventListener("pointermove", handleMouseMoveEvent as EventListener);
 
-    return () =>
-      target.removeEventListener(
-        "pointermove",
-        handleMouseMoveEvent as EventListener,
-      );
+    return () => target.removeEventListener("pointermove", handleMouseMoveEvent as EventListener);
   }, [isRecording, targetRef]);
 
   return { data };

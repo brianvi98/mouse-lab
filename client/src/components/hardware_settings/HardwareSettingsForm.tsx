@@ -1,100 +1,159 @@
-import { useState, useEffect } from "react";
+import type { SubmitEventHandler } from "react";
+import { Controller, type Control, type FieldErrors } from "react-hook-form";
 import SearchableDropdown from "../SearchableDropdown";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 import { Card, CardHeader } from "../ui/card";
-import { gearData } from "@/mock_data/settings";
+import type { DropdownOption } from "../SearchableDropdown";
+import type { HardwareSettingsFormValues } from "./hardwareSettingsFormSchema";
+import { useGetGearQuery } from "@/api/gearApi";
+import { formEnums } from "@/mock_data/settings";
 
-function HardwareSettingsForm() {
-  const [form, setForm] = useState({
-    mouse: null as string | null,
-    mousePad: null as string | null,
-    mouseSkates: null as string | null,
-    pollingRate: null as string | null,
-    dpi: 800,
-    windowsSensitivity: 11,
-    screenResolution: null as string | null,
-    refreshRate: null as string | null,
-  });
+type HardwareSettingsFormProps = {
+  control: Control<HardwareSettingsFormValues>;
+  errors: FieldErrors<HardwareSettingsFormValues>;
+  submitEnabled: boolean;
+  onSubmit: SubmitEventHandler<HTMLFormElement>;
+};
+
+function HardwareSettingsForm({ control, errors, submitEnabled, onSubmit }: HardwareSettingsFormProps) {
+  const { data: gearData } = useGetGearQuery();
+
+  const mouseList: DropdownOption[] = gearData?.data?.mice.map((m) => ({ label: m.fullName, value: m.id })) ?? [];
+  const mousepadList: DropdownOption[] =
+    gearData?.data?.mousepads.map((m) => ({ label: m.fullName, value: m.id })) ?? [];
+  const skatesList: DropdownOption[] = gearData?.data?.skates.map((m) => ({ label: m.fullName, value: m.id })) ?? [];
 
   return (
-    <Card className="w-full self-stretch">
-      <CardHeader className="font-bold">GEAR SETTINGS</CardHeader>
-
-      <div className="grid grid-cols-3 gap-4 mx-3">
-        <SearchableDropdown
-          label="Mouse"
-          items={gearData.mice}
-          value={form.mouse}
-          onChange={(v) => setForm((p) => ({ ...p, mouse: v }))}
-        />
-
-        <SearchableDropdown
-          label="Mouse Pad"
-          items={gearData.mousepads}
-          value={form.mousePad}
-          onChange={(v) => setForm((p) => ({ ...p, mousePad: v }))}
-        />
-
-        <SearchableDropdown
-          label="Mouse Skates"
-          items={gearData.mouseskates}
-          value={form.mouseSkates}
-          onChange={(v) => setForm((p) => ({ ...p, mouseSkates: v }))}
-        />
-
-        <SearchableDropdown
-          label="Polling Rate"
-          items={gearData.pollingRate}
-          value={form.pollingRate}
-          onChange={(v) => setForm((p) => ({ ...p, pollingRate: v }))}
-        />
-
-        <div className="flex flex-col gap-1">
-          <div>DPI</div>
-          <Input
-            className="[appearance:textfield] 
-            [&::-webkit-outer-spin-button]:appearance-none
-            [&::-webkit-inner-spin-button]:appearance-none"
-            type="number"
-            value={form.dpi}
-            onChange={(e) =>
-              setForm((p) => ({ ...p, dpi: Number(e.target.value) }))
-            }
-          />
+    <form className="flex justify-center" onSubmit={onSubmit} noValidate>
+      <Card className="w-[90%] self-stretch">
+        <CardHeader className="font-bold">GEAR SETTINGS</CardHeader>
+        <div className="mx-3 grid grid-cols-3 gap-4">
+          <div>
+            <Controller
+              name="mouse"
+              control={control}
+              render={({ field }) => (
+                <SearchableDropdown header="Mouse" items={mouseList} value={field.value} onChange={field.onChange} />
+              )}
+            />
+            <p className="text-destructive min-h-5 text-sm">{errors.mouse?.message}</p>
+          </div>
+          <div>
+            <Controller
+              name="mousePad"
+              control={control}
+              render={({ field }) => (
+                <SearchableDropdown
+                  header="Mouse Pad"
+                  items={mousepadList}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <p className="text-destructive min-h-5 text-sm">{errors.mousePad?.message}</p>
+          </div>
+          <div>
+            <Controller
+              name="mouseSkates"
+              control={control}
+              render={({ field }) => (
+                <SearchableDropdown
+                  header="Mouse Skates"
+                  items={skatesList}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <p className="text-destructive min-h-5 text-sm">{errors.mouseSkates?.message}</p>
+          </div>
+          <div>
+            <Controller
+              name="pollingRate"
+              control={control}
+              render={({ field }) => (
+                <SearchableDropdown
+                  header="Polling Rate"
+                  items={formEnums.pollingRate}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <p className="text-destructive min-h-5 text-sm">{errors.pollingRate?.message}</p>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div>DPI</div>
+            <Controller
+              name="dpi"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  type="number"
+                  value={field.value}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              )}
+            />
+            <p className="text-destructive min-h-5 text-sm">{errors.dpi?.message}</p>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div>Windows Sensitivity</div>
+            <Controller
+              name="windowsSensitivity"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  type="number"
+                  value={field.value}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              )}
+            />
+            <p className="text-destructive min-h-5 text-sm">{errors.windowsSensitivity?.message}</p>
+          </div>
+          <div>
+            <Controller
+              name="screenResolution"
+              control={control}
+              render={({ field }) => (
+                <SearchableDropdown
+                  header="Screen Resolution"
+                  items={formEnums.screenResolution}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <p className="text-destructive min-h-5 text-sm">{errors.screenResolution?.message}</p>
+          </div>
+          <div>
+            <Controller
+              name="refreshRate"
+              control={control}
+              render={({ field }) => (
+                <SearchableDropdown
+                  header="Refresh Rate"
+                  items={formEnums.refreshRate}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            <p className="text-destructive min-h-5 text-sm">{errors.refreshRate?.message}</p>
+          </div>
         </div>
-
-        <div className="flex flex-col gap-1">
-          <div>Windows Sensitivity</div>
-          <Input
-            className="[appearance:textfield] 
-            [&::-webkit-outer-spin-button]:appearance-none 
-            [&::-webkit-inner-spin-button]:appearance-none"
-            type="number"
-            value={form.windowsSensitivity}
-            onChange={(e) =>
-              setForm((p) => ({
-                ...p,
-                windowsSensitivity: Number(e.target.value),
-              }))
-            }
-          />
+        <div className="mx-3 mt-4 flex justify-center">
+          <Button type="submit" disabled={!submitEnabled}>
+            Save settings
+          </Button>
         </div>
-
-        <SearchableDropdown
-          label="Screen Resolution"
-          items={gearData.screenResolution}
-          value={form.screenResolution}
-          onChange={(v) => setForm((p) => ({ ...p, screenResolution: v }))}
-        />
-
-        <SearchableDropdown
-          label="Refresh Rate"
-          items={gearData.refreshRate}
-          value={form.refreshRate}
-          onChange={(v) => setForm((p) => ({ ...p, refreshRate: v }))}
-        />
-      </div>
-    </Card>
+      </Card>
+    </form>
   );
 }
 
