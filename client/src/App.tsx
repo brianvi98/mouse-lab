@@ -2,11 +2,13 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import HomePage from "./components/pages/HomePage";
 import TestingPage from "./components/pages/TestingPage";
+import HistoryPage from "./components/pages/HistoryPage";
 import SignInPage from "./components/pages/SignInPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import { Routes, Route } from "react-router-dom";
-import HistoryPage from "./components/pages/HistoryPage";
+
+import { Toaster } from "./components/ui/sonner";
 
 function App() {
   return (
@@ -25,6 +27,7 @@ function App() {
         />
         <Route path="/auth/*" element={<SignInPage />} />
       </Routes>
+      <Toaster position="top-center" />
     </div>
   );
 }
