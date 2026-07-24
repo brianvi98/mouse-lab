@@ -34,3 +34,10 @@ export type CreateSessionRequest = {
   settings: GearSettings;
   trials: TrialRequest[];
 };
+
+export type SessionsStatsResponse = {
+  mostUsedMouseFullName: string;
+  mostUsedMousepadFullName: string;
+  mostUsedSkatesFullName: string;
+  totalSessionsCompleted: number;
+};

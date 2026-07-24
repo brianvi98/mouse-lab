@@ -1,6 +1,11 @@
 import { api } from "./baseApi";
 import type { ApiEnvelope, PagedData } from "../types/common";
-import type { CreateSessionRequest, SessionDetailsResponse, SessionSummaryResponse } from "../types/sessions";
+import type {
+  CreateSessionRequest,
+  SessionDetailsResponse,
+  SessionSummaryResponse,
+  SessionsStatsResponse,
+} from "../types/sessions";
 
 const sessionsApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -10,6 +15,10 @@ const sessionsApi = api.injectEndpoints({
     }),
     getSessionById: build.query<ApiEnvelope<SessionDetailsResponse>, string>({
       query: (id) => `sessions/${id}`,
+      providesTags: ["Session"],
+    }),
+    getSessionsStats: build.query<ApiEnvelope<SessionsStatsResponse>, void>({
+      query: () => `sessions/stats`,
       providesTags: ["Session"],
     }),
     createSession: build.mutation<ApiEnvelope<SessionSummaryResponse>, CreateSessionRequest>({
@@ -30,5 +39,10 @@ const sessionsApi = api.injectEndpoints({
   }),
 });
 
-export const { useGetSessionsQuery, useGetSessionByIdQuery, useDeleteSessionByIdMutation, useCreateSessionMutation } =
-  sessionsApi;
+export const {
+  useGetSessionsQuery,
+  useGetSessionByIdQuery,
+  useGetSessionsStatsQuery,
+  useDeleteSessionByIdMutation,
+  useCreateSessionMutation,
+} = sessionsApi;
