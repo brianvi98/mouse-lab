@@ -92,7 +92,7 @@ function TestingPage() {
           submitEnabled={isSubmitEnabled}
           onSubmit={form.handleSubmit(onSubmit)}
         />
-        <div className="mx-48 flex justify-between gap-2">
+        <div className="mx-6 flex flex-col justify-between gap-2 sm:mx-12 md:mx-24 md:flex-row md:flex-wrap lg:mx-48">
           <TrackingTestCard onCompletion={onTrackingTestCompletion} />
           <FlickingTestCard onCompletion={onFlickingTestCompletion} />
         </div>

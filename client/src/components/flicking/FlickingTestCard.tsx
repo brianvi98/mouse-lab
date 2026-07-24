@@ -1,11 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { calculateMetrics } from "@/utils/metricsCalculation";
-import type { Metric } from "@/utils/metricsCalculation";
 import type { PointerSample } from "@/hooks/usePointerCapture";
 import FlickingTestCanvas from "./FlickingTestCanvas";
 
@@ -40,7 +39,7 @@ function FlickingTestCard({ onCompletion }: FlickingTestProps) {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-flick-orange">Flicking Test</CardTitle>
             <div className="w-25 rounded-sm border py-0.5 text-center">
-              {!frames.length ? "INCOMPLETE" : "COMPLETE"}
+              {!pointerData.length ? "INCOMPLETE" : "COMPLETE"}
             </div>
           </CardHeader>
           <CardDescription className="align-center flex flex-1 flex-col justify-center py-20">
