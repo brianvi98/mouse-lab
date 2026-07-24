@@ -1,8 +1,10 @@
 package com.brianvi98.mouselab.gear.skates;
 
+import com.brianvi98.mouselab.gear.mouse.Mouse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -14,6 +16,7 @@ public class SkatesService {
     public List<SkatesResponse> getAll() {
         return skatesRepository.findAll()
                 .stream()
+                .sorted(Comparator.comparing(Skates::getFullName))
                 .map(SkatesResponse::from)
                 .toList();
     }

@@ -1,8 +1,10 @@
 package com.brianvi98.mouselab.gear.mousepad;
 
+import com.brianvi98.mouselab.gear.mouse.Mouse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -14,6 +16,7 @@ public class MousepadService {
     public List<MousepadResponse> getAll() {
         return mousepadRepository.findAll()
                 .stream()
+                .sorted(Comparator.comparing(Mousepad::getFullName))
                 .map(MousepadResponse::from)
                 .toList();
     }
