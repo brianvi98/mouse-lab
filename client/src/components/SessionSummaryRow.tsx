@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Skeleton } from "./ui/skeleton";
 import MetricPlotsDashboard from "./plots/MetricPlotsDashboard";
 import type { SessionSummaryResponse } from "@/types/sessions";

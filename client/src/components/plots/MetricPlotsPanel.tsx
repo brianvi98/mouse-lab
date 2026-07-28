@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Expand } from "lucide-react";
 import MetricPlot from "@/components/plots/MetricPlot";
-import type { Frame, Metric } from "@/utils/metricsCalculation";
+import type { Metric } from "@/utils/metricsCalculation";
+import type { FrameSample } from "@/types/framesample";
 
 export type AxisLabels = { xLabel: string; yLabel: string };
 
@@ -19,7 +20,7 @@ export type PlotColors = {
 };
 
 export type MetricPlotPanelProps = {
-  data: Frame[];
+  data: FrameSample[];
   defaultMetric: Metric;
   metricsConfig: MetricButton[];
   plotColors: PlotColors;
@@ -42,8 +43,8 @@ function PlotArea({
   const selectedConfig = metricsConfig.find((m) => m.metric === selectedMetric);
 
   return (
-    <div className="flex gap-4 h-full">
-      <aside className="flex flex-col gap-2 w-48 shrink-0">
+    <div className="flex h-full gap-4">
+      <aside className="flex w-48 shrink-0 flex-col gap-2">
         {metricsConfig.map((m) => (
           <Button
             key={m.metric}
@@ -55,13 +56,11 @@ function PlotArea({
           </Button>
         ))}
       </aside>
-      <main className="flex-1 min-h-0">
+      <main className="min-h-0 flex-1">
         <MetricPlot
           data={data}
           dataKey={selectedMetric}
-          axisLabels={
-            selectedConfig?.axisLabels ?? { xLabel: "Time", yLabel: "Value" }
-          }
+          axisLabels={selectedConfig?.axisLabels ?? { xLabel: "Time", yLabel: "Value" }}
           colors={plotColors}
         />
       </main>
@@ -69,18 +68,12 @@ function PlotArea({
   );
 }
 
-function MetricPlotPanel({
-  data,
-  defaultMetric,
-  metricsConfig,
-  plotColors,
-  title,
-}: MetricPlotPanelProps) {
+function MetricPlotPanel({ data, defaultMetric, metricsConfig, plotColors, title }: MetricPlotPanelProps) {
   const [selectedMetric, setSelectedMetric] = useState<Metric>(defaultMetric);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   return (
-    <div className="flex flex-col gap-2 border-2 border-gray-600 rounded-xs">
+    <div className="flex flex-col gap-2 rounded-xs border-2 border-gray-600">
       <div className="h-148">
         <PlotArea
           data={data}
@@ -108,9 +101,9 @@ function MetricPlotPanel({
           Expand
         </Button>
         <SheetContent side="bottom" className="h-[98vh]!">
-          <div className="flex flex-col h-full gap-2 p-4">
+          <div className="flex h-full flex-col gap-2 p-4">
             {title && <h2 className="text-xl font-semibold">{title}</h2>}
-            <div className="flex-1 min-h-0">
+            <div className="min-h-0 flex-1">
               <PlotArea
                 data={data}
                 selectedMetric={selectedMetric}

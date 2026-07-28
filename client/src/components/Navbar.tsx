@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { Activity, ChartLine, Info, CircleUser } from "lucide-react";
-import { useUser, Show, UserButton, SignInButton } from "@clerk/react";
+import { Activity, ChartLine, CircleUser } from "lucide-react";
+import { useUser, Show, UserButton } from "@clerk/react";
 
 import Logo from "./Logo";
 

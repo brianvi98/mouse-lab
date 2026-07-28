@@ -1,20 +1,11 @@
 import { useMemo } from "react";
 import type { CSSProperties } from "react";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  LineChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Line,
-} from "recharts";
-import type { Frame, Metric } from "@/utils/metricsCalculation";
+import { ResponsiveContainer, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Line } from "recharts";
+import type { Metric } from "@/utils/metricsCalculation";
+import type { FrameSample } from "@/types/framesample";
 
 export type MetricPlotProps = {
-  data: Frame[];
+  data: FrameSample[];
   dataKey: Metric;
   axisLabels: { xLabel: string; yLabel: string };
   colors: {
@@ -34,11 +25,7 @@ function MetricPlot({ data, dataKey, axisLabels, colors }: MetricPlotProps) {
       let sum = 0;
       let count = 0;
 
-      for (
-        let j = Math.max(0, i - WINDOW_RADIUS);
-        j <= Math.min(data.length - 1, i + WINDOW_RADIUS);
-        j++
-      ) {
+      for (let j = Math.max(0, i - WINDOW_RADIUS); j <= Math.min(data.length - 1, i + WINDOW_RADIUS); j++) {
         sum += data[j][dataKey];
         count++;
       }
@@ -73,10 +60,7 @@ function MetricPlot({ data, dataKey, axisLabels, colors }: MetricPlotProps) {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart
-        data={smoothed}
-        margin={{ top: 20, right: 0, left: 10, bottom: 10 }}
-      >
+      <LineChart data={smoothed} margin={{ top: 20, right: 0, left: 10, bottom: 10 }}>
         <CartesianGrid strokeDasharray="3 3" />
 
         <XAxis
@@ -102,20 +86,8 @@ function MetricPlot({ data, dataKey, axisLabels, colors }: MetricPlotProps) {
 
         <Tooltip />
 
-        <Line
-          type="linear"
-          dataKey={dataKey}
-          stroke={colors.realData}
-          dot={false}
-          strokeWidth={1}
-        />
-        <Line
-          type="monotone"
-          dataKey="smooth"
-          stroke={colors.smoothData}
-          dot={false}
-          strokeWidth={2}
-        />
+        <Line type="linear" dataKey={dataKey} stroke={colors.realData} dot={false} strokeWidth={1} />
+        <Line type="monotone" dataKey="smooth" stroke={colors.smoothData} dot={false} strokeWidth={2} />
       </LineChart>
     </ResponsiveContainer>
   );
