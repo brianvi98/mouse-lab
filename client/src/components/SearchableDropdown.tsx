@@ -15,7 +15,7 @@ type SearchableDropdownProps = {
 function SearchableDropdown({ header, items, value, onChange }: SearchableDropdownProps) {
   return (
     <div className="flex w-full flex-col gap-1">
-      <div>{header}</div>
+      <div className="h-8 leading-4">{header}</div>
 
       <Combobox items={items} value={items.find((i) => i.value === value) ?? null} onValueChange={onChange}>
         <ComboboxInput placeholder="Select..." />

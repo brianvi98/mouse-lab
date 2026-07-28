@@ -85,7 +85,7 @@ function HardwareSettingsForm({ control, errors, submitEnabled, onSubmit }: Hard
             <p className="text-destructive min-h-5 text-sm">{errors.pollingRate?.message}</p>
           </div>
           <div className="flex flex-col gap-1">
-            <div>DPI</div>
+            <div className="h-8 leading-4">DPI</div>
             <Controller
               name="dpi"
               control={control}
@@ -101,7 +101,7 @@ function HardwareSettingsForm({ control, errors, submitEnabled, onSubmit }: Hard
             <p className="text-destructive min-h-5 text-sm">{errors.dpi?.message}</p>
           </div>
           <div className="flex flex-col gap-1">
-            <div>Windows Sensitivity</div>
+            <div className="h-8 leading-4">Windows Sensitivity</div>
             <Controller
               name="windowsSensitivity"
               control={control}
