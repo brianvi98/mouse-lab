@@ -34,7 +34,7 @@ function PlotArea({
   plotColors,
   onMetricChange,
 }: {
-  data: Frame[];
+  data: FrameSample[];
   selectedMetric: Metric;
   metricsConfig: MetricButton[];
   plotColors: PlotColors;
