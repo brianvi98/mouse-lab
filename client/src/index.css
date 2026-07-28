@@ -6,3 +6,11 @@
   --color-flick-orange: #f0a030;
   --color-canvas: #1a1a1e;
 }
+
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}

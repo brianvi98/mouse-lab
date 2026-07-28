@@ -31,7 +31,7 @@ const staggerContainer: Variants = {
 
 function HomePage() {
   return (
-    <div className="flex max-w-full flex-col items-center">
+    <div className="flex w-full flex-col items-center">
       {/* Hero */}
       <motion.section variants={staggerContainer} initial="hidden" animate="show">
         <div className="mx-auto flex flex-col items-center gap-2 px-4 py-6 sm:px-6">

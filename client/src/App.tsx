@@ -12,7 +12,7 @@ import { Toaster } from "./components/ui/sonner";
 
 function App() {
   return (
-    <div className="flex flex-col">
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden">
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
