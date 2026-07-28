@@ -24,7 +24,7 @@ function Navbar() {
           }
         >
           <Activity className="size-4" />
-          <span className="hidden sm:block">Testing</span>
+          Testing
         </NavLink>
         <NavLink
           to="/history"
@@ -35,7 +35,7 @@ function Navbar() {
           }
         >
           <ChartLine className="size-4" />
-          <span className="hidden sm:block">History</span>
+          History
         </NavLink>
       </div>
 
