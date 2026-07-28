@@ -85,6 +85,7 @@ function TestingPage() {
 
   return (
     <PageContainer>
+      <title>MouseLab | Testing</title>
       <div className="flex flex-col gap-2">
         <HardwareSettingsForm
           control={form.control}

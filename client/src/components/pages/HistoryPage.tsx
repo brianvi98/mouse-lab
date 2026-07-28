@@ -48,6 +48,7 @@ function HistoryPage() {
 
   return (
     <PageContainer className="flex flex-col gap-4">
+      <title>MouseLab | History</title>
       <SessionsStats />
       {/* Session rows */}
       <h2 className="text-2xl">Past Sessions</h2>
