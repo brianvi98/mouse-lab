@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { usePointerCapture, type PointerSample } from "@/hooks/usePointerCapture";
+import { toast } from "sonner";
 
 type FlickingTestCanvasProps = {
   onCompletion: (data: PointerSample[]) => void;
@@ -66,7 +67,6 @@ function FlickingTestCanvas({ onCompletion = () => {} }: FlickingTestCanvasProps
   }, [isRecording, isTestComplete, onCompletion]);
 
   const clickStartTest = (e: React.PointerEvent<HTMLDivElement>) => {
-    console.log("starting test, recording pointer data...");
     e.stopPropagation();
     setIsRecording(true);
 
@@ -97,8 +97,8 @@ function FlickingTestCanvas({ onCompletion = () => {} }: FlickingTestCanvasProps
           <div className="flex flex-col items-center">
             <p className="text-3xl">CLICK TO START</p>
             <p className="text-m">
-              1. The target will teleport around every {TELEPORT_INTERVAL_MS / 1000} seconds.
-              <br /> 2. Try to make one clean flick between the targets.
+              <p>1. The target will teleport around every {TELEPORT_INTERVAL_MS / 1000} seconds.</p>
+              <p>2. Try to make one clean flick between the targets.</p>
             </p>
           </div>
         </div>
