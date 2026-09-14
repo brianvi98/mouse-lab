@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { usePointerCapture, type PointerSample } from "@/hooks/usePointerCapture";
-import { toast } from "sonner";
 
 type FlickingTestCanvasProps = {
   onCompletion: (data: PointerSample[]) => void;
