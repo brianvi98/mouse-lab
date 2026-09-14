@@ -8,6 +8,8 @@ import TrackingTestCanvas from "./TrackingTestCanvas";
 import { calculateMetrics } from "@/utils/metricsCalculation";
 import type { PointerSample } from "@/hooks/usePointerCapture";
 
+import { toast } from "sonner";
+
 export type TrackingTestProps = {
   onCompletion: (data: PointerSample[]) => void;
 };
@@ -34,7 +36,13 @@ function TrackingTestCard({ onCompletion }: TrackingTestProps) {
       <div className="flex flex-1 shrink-0 flex-col justify-center">
         <Card
           className="flex h-full min-h-2 w-full cursor-pointer flex-col border-2 border-gray-600 transition-transform duration-100 hover:scale-101"
-          onClick={handleCardClick}
+          onClick={(e: React.PointerEvent<HTMLDivElement>) => {
+            handleCardClick(e);
+            toast("Press Esc to exit this test.", {
+              id: "card-click-toast",
+              duration: 2000,
+            });
+          }}
         >
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-track-teal">Tracking Test</CardTitle>
